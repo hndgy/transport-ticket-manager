@@ -5,8 +5,8 @@ import application.model.models.carteDeTransport.ticket.portefeuille.IPortefeuil
 
 public interface ICarteDeTransport {
 
-    static ICarteDeTransport creerCarteDeTransport(){
-        return new CarteDeTransportImpl();
+    static ICarteDeTransport creerCarteDeTransport(long id, long idTitulaire, IAbonnement abonnement, IPortefeuilleDeTicket portefeuilleDeTicket, boolean valide){
+        return new CarteDeTransportImpl(id, idTitulaire, abonnement, portefeuilleDeTicket, valide);
     }
 
     long getIdTitulaire();

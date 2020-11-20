@@ -28,11 +28,12 @@ public abstract class AbstractPortefeuilleDeTicket implements IPortefeuilleDeTic
     }
 
     @Override
-    public  void depenserTicket() {
-        this.tickets.get(0).
+    public void depenserTicket() {
+        this.tickets.get(0).;
+
     }
     @Override
-    public  void ajouterTicket(ITicket ticket){
-
+    public void ajouterTicket(ITicket ticket){
+        this.tickets.add(ticket);
     }
 }

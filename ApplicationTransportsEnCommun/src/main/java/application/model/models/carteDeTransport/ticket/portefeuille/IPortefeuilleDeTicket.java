@@ -6,8 +6,8 @@ import java.util.Collection;
 
 public interface IPortefeuilleDeTicket {
 
-    static IPortefeuilleDeTicket creerPortefeuilleDeTicket(){
-        return new PortefeuilleDeTicketImpl();
+    static IPortefeuilleDeTicket creerPortefeuilleDeTicket(long id){
+        return new PortefeuilleDeTicketImpl(id);
     }
 
     long getId();
