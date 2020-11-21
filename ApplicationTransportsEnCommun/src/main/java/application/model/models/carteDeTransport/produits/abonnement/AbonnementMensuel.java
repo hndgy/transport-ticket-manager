@@ -1,0 +1,14 @@
+package application.model.models.carteDeTransport.produits.abonnement;
+
+import java.time.LocalDate;
+
+public class AbonnementMensuel extends AbstractAbonnement {
+    public AbonnementMensuel(long id, LocalDate dateDebut, float prix) {
+        super(id, dateDebut, dateDebut.plusMonths(1), prix);
+    }
+
+    @Override
+    public boolean estValide() {
+        return getDateFin().isAfter(LocalDate.now());
+    }
+}

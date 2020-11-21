@@ -1,27 +1,26 @@
 package application.model.facade;
 
-import application.model.DTO.UserConnexionDTO;
-import application.model.DTO.UserDesinscriptionDTO;
-import application.model.DTO.UserInscriptionDTO;
+import application.model.DTO.*;
 
 public interface IFacade {
 
-    default IFacade creerFacade(){
-        return null; //new FacadeImpl();
+    static IFacade creerFacade(){
+        return new FacadeImpl();
     }
-    void inscrire(UserInscriptionDTO userInscriptionDTO);
 
-    void desinscrire(UserDesinscriptionDTO userDesinscriptionDTO);
+    long inscrire(UserInscriptionDTO userInscriptionDTO);
 
-    void connecter(UserConnexionDTO userConnexionDTO);
+    boolean desinscrire(UserDesinscriptionDTO userDesinscriptionDTO);
 
-    void deconnecter();
+    long connecter(UserConnexionDTO userConnexionDTO);
 
-    void souscrireUnAbonnement();
+    boolean deconnecter(long idUser);
 
-    void commanderTitre();
+    boolean souscrireUnAbonnement(SouscriptionDTO souscriptionDTO);
 
-    void validerTitre();
+    boolean commanderTitre(CommandeTitreDTO commandeTitreDTO);
+
+    boolean validerTitre(long idCarte);
 
 
 }

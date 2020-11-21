@@ -1,12 +1,12 @@
 package application.model.models.carteDeTransport;
 
-import application.model.models.carteDeTransport.abonnement.IAbonnement;
-import application.model.models.carteDeTransport.ticket.portefeuille.IPortefeuilleDeTicket;
+import application.model.models.carteDeTransport.produits.abonnement.IAbonnement;
+import application.model.models.carteDeTransport.portefeuille.IPortefeuilleDeTicket;
 
 public interface ICarteDeTransport {
 
-    static ICarteDeTransport creerCarteDeTransport(long id, long idTitulaire, IAbonnement abonnement, IPortefeuilleDeTicket portefeuilleDeTicket, boolean valide){
-        return new CarteDeTransportImpl(id, idTitulaire, abonnement, portefeuilleDeTicket, valide);
+    static ICarteDeTransport creerCarteDeTransport(long id, long idTitulaire, IPortefeuilleDeTicket portefeuilleDeTicket){
+        return new CarteDeTransportImpl(id, idTitulaire, portefeuilleDeTicket);
     }
 
     long getIdTitulaire();
@@ -15,7 +15,5 @@ public interface ICarteDeTransport {
     IPortefeuilleDeTicket getPortefeuilleDeTicket();
 
     boolean verificationDuTitre(); // Retourne true si l'abonnement est valide ou si il y a 1 ticket, sinon false.
-
-
 
 }

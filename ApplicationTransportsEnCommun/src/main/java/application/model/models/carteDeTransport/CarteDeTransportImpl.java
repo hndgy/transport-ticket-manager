@@ -1,11 +1,11 @@
 package application.model.models.carteDeTransport;
 
-import application.model.models.carteDeTransport.abonnement.IAbonnement;
-import application.model.models.carteDeTransport.ticket.portefeuille.IPortefeuilleDeTicket;
+import application.model.models.carteDeTransport.produits.abonnement.IAbonnement;
+import application.model.models.carteDeTransport.portefeuille.IPortefeuilleDeTicket;
 
 public class CarteDeTransportImpl extends AbstractCarteDeTransport {
 
-    public CarteDeTransportImpl(long id, long idTitulaire, IAbonnement abonnement, IPortefeuilleDeTicket portefeuilleDeTicket, boolean valide) {
-        super(id, idTitulaire, abonnement, portefeuilleDeTicket, valide);
+    public CarteDeTransportImpl(long id, long idTitulaire, IPortefeuilleDeTicket portefeuilleDeTicket) {
+        super(id, idTitulaire, portefeuilleDeTicket);
     }
 }

@@ -10,7 +10,23 @@ public class UserInscriptionDTO {
     }
 
     private String nom;
+    private String prenom;
+
+    public UserInscriptionDTO(String nom, String prenom, String motDePasse, String mail) {
+        this.nom = nom;
+        this.prenom = prenom;
+        this.motDePasse = motDePasse;
+        this.mail = mail;
+    }
+
     private String motDePasse;
+    private String mail;
 
+    public String getPrenom() {
+        return prenom;
+    }
 
+    public String getMail() {
+        return mail;
+    }
 }
