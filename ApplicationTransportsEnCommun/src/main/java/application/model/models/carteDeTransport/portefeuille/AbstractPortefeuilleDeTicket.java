@@ -1,7 +1,6 @@
 package application.model.models.carteDeTransport.portefeuille;
 
 import application.model.models.carteDeTransport.produits.ticket.ITicket;
-import application.model.models.exceptions.NombreDeVoyageEpuiseException;
 
 import java.util.List;
 

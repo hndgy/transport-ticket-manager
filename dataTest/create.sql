@@ -10,11 +10,10 @@ CREATE TABLE `utilisateur` (
 
 
 CREATE TABLE `tarifs` (
-                               `id` mediumint(8) unsigned NOT NULL auto_increment,
-                               `type_produit` varchar(255) default NULL,
-                               `prix` decimal(5,2) default 0,
-
-                               PRIMARY KEY (`id`)
+    `id` mediumint(8) unsigned NOT NULL auto_increment,
+    `type_produit` varchar(255) default NULL,
+    `prix` decimal(5,2) default 0,
+    PRIMARY KEY (`id`)
 ) AUTO_INCREMENT=1;
 
 

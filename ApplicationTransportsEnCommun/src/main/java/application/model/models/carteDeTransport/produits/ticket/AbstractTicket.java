@@ -1,7 +1,5 @@
 package application.model.models.carteDeTransport.produits.ticket;
 
-import application.model.models.exceptions.NombreDeVoyageEpuiseException;
-
 public abstract class AbstractTicket implements ITicket{
 
     private long id;

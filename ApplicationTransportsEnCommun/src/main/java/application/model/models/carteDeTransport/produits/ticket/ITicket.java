@@ -1,7 +1,5 @@
 package application.model.models.carteDeTransport.produits.ticket;
 
-import application.model.models.exceptions.NombreDeVoyageEpuiseException;
-
 public interface ITicket {
 
     static ITicket creerTicket1Voyage(long id, float prix){
