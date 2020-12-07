@@ -23,8 +23,6 @@ public class ProgrammeTest {
         }
 
 
-
-
         try {
             id = facade.inscrire(new UserInscriptionDTO("test", "test","test99@tnndev.fr","123456781"));
             if(id != -1){
@@ -37,7 +35,6 @@ public class ProgrammeTest {
         } catch (MailDejaUtiliseException e) {
             System.out.println(e.getMessage());
         }
-
 
 
 

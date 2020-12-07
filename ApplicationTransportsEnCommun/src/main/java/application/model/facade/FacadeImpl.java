@@ -1,21 +1,12 @@
 package application.model.facade;
 
 import application.model.DTO.*;
-import application.model.bdd.FakeDB;
 import application.model.bdd.MySQLBddConnection;
-import application.model.models.carteDeTransport.ICarteDeTransport;
-import application.model.models.carteDeTransport.portefeuille.IPortefeuilleDeTicket;
-import application.model.models.carteDeTransport.portefeuille.PortefeuilleDeTicketImpl;
-import application.model.models.carteDeTransport.produits.abonnement.IAbonnement;
-import application.model.models.carteDeTransport.produits.ticket.ITicket;
-import application.model.models.exceptions.MailDejaUtiliseException;
-import application.model.models.utilisateur.IUtilisateur;
 
-import javax.lang.model.type.NullType;
-import javax.swing.text.DefaultEditorKit;
-import java.util.ArrayList;
+import application.model.models.exceptions.MailDejaUtiliseException;
+
 import java.util.HashMap;
-import java.util.List;
+
 import java.util.Map;
 
 public class FacadeImpl implements IFacade {
@@ -62,7 +53,7 @@ public class FacadeImpl implements IFacade {
 
     @Override
     public boolean deconnecter(long idUser) {
-        this.connectedUsers.remove(idUser);
+        var res = this.connectedUsers.remove(idUser);
         return true;
     }
 

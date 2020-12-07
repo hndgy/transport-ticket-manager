@@ -9,6 +9,7 @@ public class MySQLBddConnection {
     private Connection connection;
 
     private static final String USER_TABLE = "`utilisateur`";
+    private static final String TARIFS_TABLE = "`tarifs`";
 
     private static final String CONNECTION_STRING = "jdbc:mysql://localhost/db?user=admin&password=password";
 
@@ -114,5 +115,35 @@ public class MySQLBddConnection {
             this.handleSqlError(ex);
         }
         return false;
+    }
+
+    /*
+    Les produits :
+        abonnement_mensuel
+        abonnement_annuel
+        ticket_10_voyages
+        ticket_1_voyage
+     */
+    public float getTarif(String produit){
+        try{
+
+
+            Statement statement = this.connection.createStatement();
+            String sqlQuery = "SELECT prix from "+TARIFS_TABLE+ " WHERE type_produit = '"+ produit + "'";
+            var resultSet = statement.executeQuery(sqlQuery); // true si le delete se passe bien
+            if (resultSet.next()){
+                 return resultSet.getFloat("prix");
+            }
+
+        } catch (SQLException ex){
+            this.handleSqlError(ex);
+        }
+        return .0f;
+    }
+
+    public static void main(String[] args) {
+        MySQLBddConnection bdd = new MySQLBddConnection();
+
+        System.out.println(bdd.getTarif("ticket_1_voyage"));
     }
 }
