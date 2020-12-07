@@ -9,17 +9,11 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.BsonObjectId;
-import org.bson.BsonValue;
 import org.bson.Document;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
-import org.bson.conversions.Bson;
-import org.bson.types.ObjectId;
 
-import java.lang.reflect.Array;
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
@@ -43,9 +37,7 @@ public class MongoDbConnection {
 
 
     private MongoDbConnection(){
-        MongoCredential credential = MongoCredential.createCredential(USER, USER_DB, PASSWORD.toCharArray());
         ConnectionString connectionString = new ConnectionString("mongodb://"+USER+":"+PASSWORD+"@"+HOST+":27017/");
-
 
         CodecRegistry pojoCodecRegistry = fromProviders(PojoCodecProvider.builder().automatic(true).build());
         CodecRegistry codecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),pojoCodecRegistry);
@@ -65,8 +57,16 @@ public class MongoDbConnection {
     }
 
 
-    public int setNbVoyage(int de){
-        return 0;
+    public Carte getById(){
+        return this.cartes.find().iterator().next();
+    }
+
+    public long updateNbVoyage(int idTitulaire, int nbVoyagePlusMoins){
+        var updateRes=  this.cartes.updateOne(
+                new Document("id_titulaire",idTitulaire),
+                new Document("$inc",
+                        new Document("nb_voyages",nbVoyagePlusMoins)));
+        return updateRes.getModifiedCount();
     }
 
     public BsonObjectId insertCarte(Carte carte){
@@ -82,18 +82,19 @@ public class MongoDbConnection {
         return res;
     }
 
+
     public static void main(String[] args) {
         MongoDbConnection c = new MongoDbConnection();
-
+/*
         var res = c.insertCarte(new Carte()
                 .setIdTitulaire(1)
                 .setNbVoyages(0)
                 .setDate_fin_abonnement(LocalDate.now().plusDays(10)));
 
-        System.out.println(res.getValue());
+        System.out.println(res.getValue());*/
 
         c.getAllCarte().stream().forEach(cr -> System.out.println(cr.getIdTitulaire()));
-
+        System.out.println(c.updateNbVoyage(1, 4));
 
 
     }
