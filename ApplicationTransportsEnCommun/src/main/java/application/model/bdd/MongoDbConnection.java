@@ -57,8 +57,8 @@ public class MongoDbConnection {
     }
 
 
-    public Carte getById(){
-        return this.cartes.find().iterator().next();
+    public Carte getById(int idTitulaire){
+        return this.cartes.find(new Document("id_titulaire", idTitulaire)).first();
     }
 
     public long updateNbVoyage(int idTitulaire, int nbVoyagePlusMoins){
@@ -76,15 +76,13 @@ public class MongoDbConnection {
 
     public List<Carte> getAllCarte(){
         List<Carte> res = new ArrayList<>();
-
         this.cartes.find().forEach(res::add);
-
         return res;
     }
 
 
     public static void main(String[] args) {
-        MongoDbConnection c = new MongoDbConnection();
+        //MongoDbConnection c = new MongoDbConnection();
 /*
         var res = c.insertCarte(new Carte()
                 .setIdTitulaire(1)
@@ -93,8 +91,8 @@ public class MongoDbConnection {
 
         System.out.println(res.getValue());*/
 
-        c.getAllCarte().stream().forEach(cr -> System.out.println(cr.getIdTitulaire()));
-        System.out.println(c.updateNbVoyage(1, 4));
+        //c.getAllCarte().stream().forEach(cr -> System.out.println(cr.getIdTitulaire()));
+        //System.out.println(c.updateNbVoyage(1, 4));
 
 
     }
