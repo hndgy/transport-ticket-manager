@@ -3,7 +3,6 @@ package application.model.bdd;
 import application.model.bdd.pojos.Carte;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
-import com.mongodb.MongoCredential;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
@@ -13,6 +12,7 @@ import org.bson.Document;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,7 +57,7 @@ public class MongoDbConnection {
     }
 
 
-    public Carte getById(int idTitulaire){
+    public Carte getCarteById(int idTitulaire){
         return this.cartes.find(new Document("id_titulaire", idTitulaire)).first();
     }
 
@@ -68,6 +68,25 @@ public class MongoDbConnection {
                         new Document("nb_voyages",nbVoyagePlusMoins)));
         return updateRes.getModifiedCount();
     }
+
+    public long updateAboMensuel(int idTitulaire){
+        var updateRes=  this.cartes.updateOne(
+                new Document("id_titulaire",idTitulaire),
+                new Document("date_fin_abonnement", LocalDate.now().getMonthValue()+1));
+        return updateRes.getModifiedCount();
+    }
+
+    public long updateAboAnnuel(int idTitulaire){
+        var updateRes=  this.cartes.updateOne(
+                new Document("id_titulaire",idTitulaire),
+                new Document("date_fin_abonnement", LocalDate.now().getYear()+1));
+        return updateRes.getModifiedCount();
+    }
+
+    public BsonObjectId addCarteByTitu(int idTitulaire){
+        return this.insertCarte(new Carte().setIdTitulaire(idTitulaire));
+    }
+
 
     public BsonObjectId insertCarte(Carte carte){
         return this.cartes.insertOne(carte).getInsertedId().asObjectId();
