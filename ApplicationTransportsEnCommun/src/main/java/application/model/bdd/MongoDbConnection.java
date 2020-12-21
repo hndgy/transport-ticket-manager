@@ -38,8 +38,8 @@ public class MongoDbConnection {
 
 
     private MongoDbConnection(){
-        ConnectionString connectionString = new ConnectionString("mongodb://"+USER+":"+PASSWORD+"@"+HOST+":27017/");
-        //ConnectionString connectionString = new ConnectionString("mongodb://localhost:27017");
+        //ConnectionString connectionString = new ConnectionString("mongodb://"+USER+":"+PASSWORD+"@"+HOST+":27017/");
+        ConnectionString connectionString = new ConnectionString("mongodb://localhost:27017");
 
         CodecRegistry pojoCodecRegistry = fromProviders(PojoCodecProvider.builder().automatic(true).build());
         CodecRegistry codecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),pojoCodecRegistry);
@@ -64,6 +64,9 @@ public class MongoDbConnection {
     }
 
     public LocalDate getFinAbo(int idTitulaire){
+        if (this.cartes.find(new Document("id_titulaire",idTitulaire)).first().getDateFinAbonnement() == null) {
+            return (this.cartes.find(new Document("id_titulaire", idTitulaire)).first()).setDateFinAbonnement(LocalDate.now()).getDateFinAbonnement();
+        }
         return Objects.requireNonNull(this.cartes.find(new Document("id_titulaire", idTitulaire)).first()).getDateFinAbonnement();
     }
 
@@ -95,7 +98,6 @@ public class MongoDbConnection {
         return this.insertCarte(new Carte().setIdTitulaire(idTitulaire));
     }
 
-
     public BsonObjectId insertCarte(Carte carte){
         return this.cartes.insertOne(carte).getInsertedId().asObjectId();
     }
@@ -126,7 +128,13 @@ public class MongoDbConnection {
         //System.out.println(c.getCarteById(1).toString());
         //System.out.println(c.updateAboMensuel(2));
         //System.out.println(c.updateAboAnnuel(2));
-
+        //System.out.println(c.addCarteByTitu(3));
+        //System.out.println(c.updateAboMensuel(3));
+        //System.out.println(c.addCarteByTitu(4));
+        //System.out.println(c.updateAboAnnuel(4));
+        //System.out.println(c.updateAboMensuel(4));
+        //System.out.println(c.addCarteByTitu(6));
+        //System.out.println(c.updateAboAnnuel(6));
     }
 
 
