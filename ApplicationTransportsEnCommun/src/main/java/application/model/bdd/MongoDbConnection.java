@@ -38,8 +38,8 @@ public class MongoDbConnection {
 
 
     private MongoDbConnection(){
-        //ConnectionString connectionString = new ConnectionString("mongodb://"+USER+":"+PASSWORD+"@"+HOST+":27017/");
-        ConnectionString connectionString = new ConnectionString("mongodb://localhost:27017");
+        ConnectionString connectionString = new ConnectionString("mongodb://"+USER+":"+PASSWORD+"@"+HOST+":27017/");
+        //ConnectionString connectionString = new ConnectionString("mongodb://localhost:27017");
 
         CodecRegistry pojoCodecRegistry = fromProviders(PojoCodecProvider.builder().automatic(true).build());
         CodecRegistry codecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),pojoCodecRegistry);
@@ -102,6 +102,19 @@ public class MongoDbConnection {
         return this.cartes.insertOne(carte).getInsertedId().asObjectId();
     }
 
+    public boolean isValide(int idTitulaire){
+        var carte = this.getCarteById(idTitulaire);
+        if (LocalDate.now().isBefore(getFinAbo(carte.getIdTitulaire()))) {
+            return true;
+        }
+        else if (carte.getNbVoyages() > 0) {
+            carte.setNbVoyages(carte.getNbVoyages()-1);
+            this.updateNbVoyage(carte.getIdTitulaire(),-1);
+            return true;
+        }
+        return false;
+    }
+
 
     public List<Carte> getAllCarte(){
         List<Carte> res = new ArrayList<>();
@@ -135,6 +148,11 @@ public class MongoDbConnection {
         //System.out.println(c.updateAboMensuel(4));
         //System.out.println(c.addCarteByTitu(6));
         //System.out.println(c.updateAboAnnuel(6));
+        //System.out.println(c.isValide(6));
+        //System.out.println(c.addCarteByTitu(7));
+
+        //System.out.println(c.updateNbVoyage(7,1));
+        //System.out.println(c.isValide(7));
     }
 
 

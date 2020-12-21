@@ -10,7 +10,7 @@ public final class Carte {
     @BsonProperty("_id")
     private ObjectId id;
 
-    @BsonProperty("nbVoyages")
+    @BsonProperty("nb_voyages")
     private int nbVoyages;
 
     @BsonProperty("id_titulaire")
