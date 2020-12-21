@@ -15,6 +15,7 @@ import org.bson.codecs.pojo.PojoCodecProvider;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
@@ -38,6 +39,7 @@ public class MongoDbConnection {
 
     private MongoDbConnection(){
         ConnectionString connectionString = new ConnectionString("mongodb://"+USER+":"+PASSWORD+"@"+HOST+":27017/");
+        //ConnectionString connectionString = new ConnectionString("mongodb://localhost:27017");
 
         CodecRegistry pojoCodecRegistry = fromProviders(PojoCodecProvider.builder().automatic(true).build());
         CodecRegistry codecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),pojoCodecRegistry);
@@ -61,6 +63,10 @@ public class MongoDbConnection {
         return this.cartes.find(new Document("id_titulaire", idTitulaire)).first();
     }
 
+    public LocalDate getFinAbo(int idTitulaire){
+        return Objects.requireNonNull(this.cartes.find(new Document("id_titulaire", idTitulaire)).first()).getDateFinAbonnement();
+    }
+
     public long updateNbVoyage(int idTitulaire, int nbVoyagePlusMoins){
         var updateRes=  this.cartes.updateOne(
                 new Document("id_titulaire",idTitulaire),
@@ -72,14 +78,16 @@ public class MongoDbConnection {
     public long updateAboMensuel(int idTitulaire){
         var updateRes=  this.cartes.updateOne(
                 new Document("id_titulaire",idTitulaire),
-                new Document("date_fin_abonnement", LocalDate.now().getMonthValue()+1));
+                new Document("$set",
+                        new Document("date_fin_abonnement",getFinAbo(idTitulaire).plusMonths(1))));
         return updateRes.getModifiedCount();
     }
 
     public long updateAboAnnuel(int idTitulaire){
         var updateRes=  this.cartes.updateOne(
                 new Document("id_titulaire",idTitulaire),
-                new Document("date_fin_abonnement", LocalDate.now().getYear()+1));
+                new Document("$set",
+                        new Document("date_fin_abonnement", getFinAbo(idTitulaire).plusYears(1))));
         return updateRes.getModifiedCount();
     }
 
@@ -101,18 +109,23 @@ public class MongoDbConnection {
 
 
     public static void main(String[] args) {
-        //MongoDbConnection c = new MongoDbConnection();
+        MongoDbConnection c = new MongoDbConnection();
+
 /*
         var res = c.insertCarte(new Carte()
-                .setIdTitulaire(1)
+                .setIdTitulaire(2)
                 .setNbVoyages(0)
-                .setDate_fin_abonnement(LocalDate.now().plusDays(10)));
+                .setDateFinAbonnement(LocalDate.now().plusDays(10)));
 
-        System.out.println(res.getValue());*/
+        System.out.println(res.getValue());
+*/
 
         //c.getAllCarte().stream().forEach(cr -> System.out.println(cr.getIdTitulaire()));
         //System.out.println(c.updateNbVoyage(1, 4));
 
+        //System.out.println(c.getCarteById(1).toString());
+        //System.out.println(c.updateAboMensuel(2));
+        //System.out.println(c.updateAboAnnuel(2));
 
     }
 

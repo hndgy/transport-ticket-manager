@@ -17,7 +17,7 @@ public final class Carte {
     private int idTitulaire;
 
     @BsonProperty("date_fin_abonnement")
-    private LocalDate date_fin_abonnement;
+    private LocalDate dateFinAbonnement;
 
 
     public ObjectId getId() {
@@ -47,12 +47,22 @@ public final class Carte {
         return this;
     }
 
-    public LocalDate getDate_fin_abonnement() {
-        return date_fin_abonnement;
+    public LocalDate getDateFinAbonnement() {
+        return dateFinAbonnement;
     }
 
-    public Carte setDate_fin_abonnement(LocalDate date_fin_abonnement) {
-        this.date_fin_abonnement = date_fin_abonnement;
+    public Carte setDateFinAbonnement(LocalDate date_fin_abonnement) {
+        this.dateFinAbonnement = date_fin_abonnement;
         return this;
+    }
+
+    @Override
+    public String toString() {
+        return "Carte{" +
+                "id=" + id +
+                ", nbVoyages=" + nbVoyages +
+                ", idTitulaire=" + idTitulaire +
+                ", date_fin_abonnement=" + dateFinAbonnement +
+                '}';
     }
 }
