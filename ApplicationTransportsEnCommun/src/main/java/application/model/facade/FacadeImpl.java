@@ -1,6 +1,7 @@
 package application.model.facade;
 
 import application.model.DTO.*;
+import application.model.bdd.MongoDbConnection;
 import application.model.bdd.MySQLBddConnection;
 
 import application.model.models.exceptions.MailDejaUtiliseException;
@@ -15,6 +16,7 @@ public class FacadeImpl implements IFacade {
 
     private Map<Long, Long> connectedUsers;
     private MySQLBddConnection mySQLBddConnection;
+    private MongoDbConnection mongoDbConnection;
 
     private static FacadeImpl instance;
     public static FacadeImpl getInstance(){
@@ -63,8 +65,8 @@ public class FacadeImpl implements IFacade {
     }
 
     @Override
-    public boolean commanderTitre(CommandeTitreDTO commandeTitreDTO) {
-        return false;
+    public long commanderTitre(CommandeTitreDTO commandeTitreDTO) {
+        return mongoDbConnection.updateNbVoyage(commandeTitreDTO.getIdCarte(),commandeTitreDTO.getNbTitre());
     }
 
     @Override

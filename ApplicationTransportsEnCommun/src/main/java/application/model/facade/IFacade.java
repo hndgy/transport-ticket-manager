@@ -19,7 +19,7 @@ public interface IFacade {
 
     boolean souscrireUnAbonnement(SouscriptionDTO souscriptionDTO);
 
-    boolean commanderTitre(CommandeTitreDTO commandeTitreDTO);
+    long commanderTitre(CommandeTitreDTO commandeTitreDTO);
 
     boolean validerTitre(long idCarte);
 

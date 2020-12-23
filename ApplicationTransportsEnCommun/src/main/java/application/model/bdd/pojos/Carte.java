@@ -14,7 +14,7 @@ public final class Carte {
     private int nbVoyages;
 
     @BsonProperty("id_titulaire")
-    private int idTitulaire;
+    private long idTitulaire;
 
     @BsonProperty("date_fin_abonnement")
     private LocalDate dateFinAbonnement;
@@ -38,11 +38,11 @@ public final class Carte {
         return this;
     }
 
-    public int getIdTitulaire() {
+    public long getIdTitulaire() {
         return idTitulaire;
     }
 
-    public Carte setIdTitulaire(int idTitulaire) {
+    public Carte setIdTitulaire(long idTitulaire) {
         this.idTitulaire = idTitulaire;
         return this;
     }

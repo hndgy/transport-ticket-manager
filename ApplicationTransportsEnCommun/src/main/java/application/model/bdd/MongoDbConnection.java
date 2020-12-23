@@ -54,23 +54,23 @@ public class MongoDbConnection {
         this.cartes = this.db.getCollection(COL_CARTES, Carte.class);
     }
 
-    public int getNbVoyage(int idTitulaire){
+    public int getNbVoyage(long idTitulaire){
         return this.cartes.find(new Document("id_titulaire", idTitulaire)).iterator().next().getNbVoyages();
     }
 
 
-    public Carte getCarteById(int idTitulaire){
+    public Carte getCarteById(long idTitulaire){
         return this.cartes.find(new Document("id_titulaire", idTitulaire)).first();
     }
 
-    public LocalDate getFinAbo(int idTitulaire){
+    public LocalDate getFinAbo(long idTitulaire){
         if (this.cartes.find(new Document("id_titulaire",idTitulaire)).first().getDateFinAbonnement() == null) {
             return (this.cartes.find(new Document("id_titulaire", idTitulaire)).first()).setDateFinAbonnement(LocalDate.now()).getDateFinAbonnement();
         }
         return Objects.requireNonNull(this.cartes.find(new Document("id_titulaire", idTitulaire)).first()).getDateFinAbonnement();
     }
 
-    public long updateNbVoyage(int idTitulaire, int nbVoyagePlusMoins){
+    public long updateNbVoyage(long idTitulaire, int nbVoyagePlusMoins){
         var updateRes=  this.cartes.updateOne(
                 new Document("id_titulaire",idTitulaire),
                 new Document("$inc",
@@ -78,7 +78,7 @@ public class MongoDbConnection {
         return updateRes.getModifiedCount();
     }
 
-    public long updateAboMensuel(int idTitulaire){
+    public long updateAboMensuel(long idTitulaire){
         var updateRes=  this.cartes.updateOne(
                 new Document("id_titulaire",idTitulaire),
                 new Document("$set",
@@ -86,7 +86,7 @@ public class MongoDbConnection {
         return updateRes.getModifiedCount();
     }
 
-    public long updateAboAnnuel(int idTitulaire){
+    public long updateAboAnnuel(long idTitulaire){
         var updateRes=  this.cartes.updateOne(
                 new Document("id_titulaire",idTitulaire),
                 new Document("$set",
@@ -94,7 +94,7 @@ public class MongoDbConnection {
         return updateRes.getModifiedCount();
     }
 
-    public BsonObjectId addCarteByTitu(int idTitulaire){
+    public BsonObjectId addCarteByTitu(long idTitulaire){
         return this.insertCarte(new Carte().setIdTitulaire(idTitulaire));
     }
 
@@ -135,24 +135,25 @@ public class MongoDbConnection {
         System.out.println(res.getValue());
 */
 
-        //c.getAllCarte().stream().forEach(cr -> System.out.println(cr.getIdTitulaire()));
-        //System.out.println(c.updateNbVoyage(1, 4));
+        /*
+        c.getAllCarte().stream().forEach(cr -> System.out.println(cr.getIdTitulaire()));
+        System.out.println(c.updateNbVoyage(1, 4));
+        System.out.println(c.getCarteById(1).toString());
+        System.out.println(c.updateAboMensuel(2));
+        System.out.println(c.updateAboAnnuel(2));
+        System.out.println(c.addCarteByTitu(3));
+        System.out.println(c.updateAboMensuel(3));
+        System.out.println(c.addCarteByTitu(4));
+        System.out.println(c.updateAboAnnuel(4));
+        System.out.println(c.updateAboMensuel(4));
+        System.out.println(c.addCarteByTitu(6));
+        System.out.println(c.updateAboAnnuel(6));
+        System.out.println(c.isValide(6));
+        System.out.println(c.addCarteByTitu(7));
+        System.out.println(c.updateNbVoyage(7,1));
+        System.out.println(c.isValide(7));
+        */
 
-        //System.out.println(c.getCarteById(1).toString());
-        //System.out.println(c.updateAboMensuel(2));
-        //System.out.println(c.updateAboAnnuel(2));
-        //System.out.println(c.addCarteByTitu(3));
-        //System.out.println(c.updateAboMensuel(3));
-        //System.out.println(c.addCarteByTitu(4));
-        //System.out.println(c.updateAboAnnuel(4));
-        //System.out.println(c.updateAboMensuel(4));
-        //System.out.println(c.addCarteByTitu(6));
-        //System.out.println(c.updateAboAnnuel(6));
-        //System.out.println(c.isValide(6));
-        //System.out.println(c.addCarteByTitu(7));
-
-        //System.out.println(c.updateNbVoyage(7,1));
-        //System.out.println(c.isValide(7));
     }
 
 
