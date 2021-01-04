@@ -1,5 +1,6 @@
 package application.programme;
 
+import application.model.DTO.SouscriptionDTO;
 import application.model.DTO.UserConnexionDTO;
 import application.model.DTO.UserDesinscriptionDTO;
 import application.model.DTO.UserInscriptionDTO;
