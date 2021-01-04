@@ -95,7 +95,10 @@ public class MongoDbConnection {
 
     public LocalDate getFinAbo(long idTitulaire) {
         if (this.cartes.find(new Document("id_titulaire", idTitulaire)).first().getDateFinAbonnement() == null) {
-            return (this.cartes.find(new Document("id_titulaire", idTitulaire)).first()).setDateFinAbonnement(LocalDate.now()).getDateFinAbonnement();
+            return (Objects.requireNonNull(this.cartes.find(new Document("id_titulaire", idTitulaire)).first())).setDateFinAbonnement(LocalDate.now()).getDateFinAbonnement();
+        }
+        if (Objects.requireNonNull(this.cartes.find(new Document("id_titulaire", idTitulaire)).first()).getDateFinAbonnement().isBefore(LocalDate.now())){
+            return (Objects.requireNonNull(this.cartes.find(new Document("id_titulaire", idTitulaire)).first())).setDateFinAbonnement(LocalDate.now()).getDateFinAbonnement();
         }
         return Objects.requireNonNull(this.cartes.find(new Document("id_titulaire", idTitulaire)).first()).getDateFinAbonnement();
     }
@@ -108,24 +111,12 @@ public class MongoDbConnection {
         return updateRes.getModifiedCount();
     }
 
-    public long updateAboMensuel(long idTitulaire) {
+    public long updateAbonnement(long idTitulaire, int nbMois) {
         var updateRes = this.cartes.updateOne(
                 new Document("id_titulaire", idTitulaire),
                 new Document("$set",
-                        new Document("date_fin_abonnement", getFinAbo(idTitulaire).plusMonths(1))));
+                        new Document("date_fin_abonnement", getFinAbo(idTitulaire).plusMonths(nbMois))));
         return updateRes.getModifiedCount();
-    }
-
-    public long updateAboAnnuel(long idTitulaire) {
-        var updateRes = this.cartes.updateOne(
-                new Document("id_titulaire", idTitulaire),
-                new Document("$set",
-                        new Document("date_fin_abonnement", getFinAbo(idTitulaire).plusYears(1))));
-        return updateRes.getModifiedCount();
-    }
-
-    public long souscrireAboMensuel(long idTitulaire){
-        return 0;
     }
 
     public BsonObjectId addCarteByTitu(long idTitulaire) {
