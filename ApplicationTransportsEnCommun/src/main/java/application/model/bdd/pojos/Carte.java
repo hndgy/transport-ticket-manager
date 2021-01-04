@@ -20,6 +20,11 @@ public final class Carte {
     private LocalDate dateFinAbonnement;
 
 
+
+    @BsonProperty("date_derniere_validation")
+    private LocalDate dateDerniereValidation;
+
+
     public ObjectId getId() {
         return id;
     }
@@ -53,6 +58,14 @@ public final class Carte {
 
     public Carte setDateFinAbonnement(LocalDate date_fin_abonnement) {
         this.dateFinAbonnement = date_fin_abonnement;
+        return this;
+    }
+    public LocalDate getDateDerniereValidation() {
+        return dateDerniereValidation;
+    }
+
+    public Carte setDateDerniereValidation(LocalDate dateDerniereValidation) {
+        this.dateDerniereValidation = dateDerniereValidation;
         return this;
     }
 
