@@ -4,6 +4,7 @@ import org.bson.codecs.pojo.annotations.BsonProperty;
 import org.bson.types.ObjectId;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public final class Carte {
 
@@ -19,10 +20,8 @@ public final class Carte {
     @BsonProperty("date_fin_abonnement")
     private LocalDate dateFinAbonnement;
 
-
-
     @BsonProperty("date_derniere_validation")
-    private LocalDate dateDerniereValidation;
+    private LocalDateTime dateDerniereValidation;
 
 
     public ObjectId getId() {
@@ -60,11 +59,11 @@ public final class Carte {
         this.dateFinAbonnement = date_fin_abonnement;
         return this;
     }
-    public LocalDate getDateDerniereValidation() {
+    public LocalDateTime getDateDerniereValidation() {
         return dateDerniereValidation;
     }
 
-    public Carte setDateDerniereValidation(LocalDate dateDerniereValidation) {
+    public Carte setDateDerniereValidation(LocalDateTime dateDerniereValidation) {
         this.dateDerniereValidation = dateDerniereValidation;
         return this;
     }
