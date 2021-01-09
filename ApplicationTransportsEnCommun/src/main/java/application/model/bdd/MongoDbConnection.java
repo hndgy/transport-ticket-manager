@@ -7,10 +7,12 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.result.DeleteResult;
 import org.bson.BsonObjectId;
 import org.bson.Document;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
+import org.bson.types.ObjectId;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -138,6 +140,15 @@ public class MongoDbConnection {
     public BsonObjectId insertCarte(Carte carte) {
         return this.cartes.insertOne(carte).getInsertedId().asObjectId();
     }
+
+    public DeleteResult removeCarteById(ObjectId id){
+        return this.cartes.deleteOne(new Document("id",id));
+    }
+
+    public DeleteResult removeCarteByTitu(long idTitu){
+        return this.cartes.deleteOne(new Document("id_titulaire", idTitu));
+    }
+
 
     public boolean isValide(int idTitulaire) {
         var carte = this.getCarteById(idTitulaire);
