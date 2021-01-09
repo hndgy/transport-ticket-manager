@@ -73,7 +73,6 @@ public class FacadeImpl implements IFacade {
 
     @Override
     public long commanderTitre(CommandeTitreDTO commandeTitreDTO) {
-        mySQLBddConnection.
         return mongoDbConnection.updateNbVoyage(commandeTitreDTO.getIdCarte(),commandeTitreDTO.getNbTitre());
     }
 

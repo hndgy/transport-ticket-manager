@@ -25,7 +25,7 @@ import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 public class MongoDbConnection {
 
 
-    private static final String DB_NAME = "transportapp";
+    private static final String DB_NAME = "transportDB";
     private static final String COL_CARTES = "cartes";
     private static final String USER_DB = "admin";
     private static final String USER = "admin";
@@ -39,8 +39,8 @@ public class MongoDbConnection {
 
 
     private MongoDbConnection() {
-        //ConnectionString connectionString = new ConnectionString("mongodb://" + USER + ":" + PASSWORD + "@" + HOST + ":27017/");
-        ConnectionString connectionString = new ConnectionString("mongodb://localhost:27017");
+        ConnectionString connectionString = new ConnectionString("mongodb://" + USER + ":" + PASSWORD + "@" + HOST + ":27017/");
+        //ConnectionString connectionString = new ConnectionString("mongodb://localhost:27017");
 
         CodecRegistry pojoCodecRegistry = fromProviders(PojoCodecProvider.builder().automatic(true).build());
         CodecRegistry codecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(), pojoCodecRegistry);
@@ -132,7 +132,7 @@ public class MongoDbConnection {
     }
 
     public BsonObjectId addCarteByTitu(long idTitulaire) {
-        return this.insertCarte(new Carte().setIdTitulaire(idTitulaire).setNbVoyages(0).setDateFinAbonnement(null).setDateDerniereValidation(null));
+        return this.insertCarte(new Carte().setIdTitulaire(idTitulaire).setNbVoyages(0));
     }
 
     public BsonObjectId insertCarte(Carte carte) {
