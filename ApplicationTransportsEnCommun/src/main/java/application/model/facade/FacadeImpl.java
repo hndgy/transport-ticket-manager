@@ -4,7 +4,10 @@ import application.model.DTO.*;
 import application.model.bdd.MongoDbConnection;
 import application.model.bdd.MySQLBddConnection;
 
+import application.model.bdd.pojos.Carte;
+import application.model.models.carteDeTransport.CarteDeTransportImpl;
 import application.model.models.exceptions.MailDejaUtiliseException;
+import org.bson.types.ObjectId;
 
 import java.util.HashMap;
 
@@ -25,13 +28,16 @@ public class FacadeImpl implements IFacade {
     private FacadeImpl(){
         this.mySQLBddConnection = MySQLBddConnection.getInstance();
         this.connectedUsers = new HashMap<>();
+        this.mongoDbConnection =  MongoDbConnection.getMongoInstance();
     }
 
     @Override
     public long inscrire(UserInscriptionDTO userInscriptionDTO) throws MailDejaUtiliseException {
         boolean checkMail = mySQLBddConnection.checkMail(userInscriptionDTO.getMail());
         if(checkMail){
-            return mySQLBddConnection.createUser(userInscriptionDTO.getNom(), userInscriptionDTO.getPrenom(), userInscriptionDTO.getMail(), userInscriptionDTO.getMotDePasse());
+            long idTitu =  mySQLBddConnection.createUser(userInscriptionDTO.getNom(), userInscriptionDTO.getPrenom(), userInscriptionDTO.getMail(), userInscriptionDTO.getMotDePasse());
+            mongoDbConnection.addCarteByTitu(idTitu);
+            return idTitu;
         }
         else throw new MailDejaUtiliseException(userInscriptionDTO.getMail());
 
@@ -40,6 +46,7 @@ public class FacadeImpl implements IFacade {
     @Override
     public boolean desinscrire(UserDesinscriptionDTO userDesinscriptionDTO) {
         return this.mySQLBddConnection.deleteUser(userDesinscriptionDTO.getMail(), userDesinscriptionDTO.getMdp());
+
     }
 
     @Override
@@ -66,6 +73,7 @@ public class FacadeImpl implements IFacade {
 
     @Override
     public long commanderTitre(CommandeTitreDTO commandeTitreDTO) {
+        mySQLBddConnection.
         return mongoDbConnection.updateNbVoyage(commandeTitreDTO.getIdCarte(),commandeTitreDTO.getNbTitre());
     }
 

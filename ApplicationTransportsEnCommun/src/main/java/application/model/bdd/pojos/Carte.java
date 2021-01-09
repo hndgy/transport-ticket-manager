@@ -20,7 +20,6 @@ public final class Carte {
     private LocalDate dateFinAbonnement;
 
 
-
     @BsonProperty("date_derniere_validation")
     private LocalDate dateDerniereValidation;
 

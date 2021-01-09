@@ -33,6 +33,7 @@ public class MongoDbConnection {
 
     private MongoDatabase db;
     private MongoCollection<Carte> cartes;
+    private static MongoDbConnection instance;
 
 
     private MongoDbConnection() {
@@ -51,6 +52,11 @@ public class MongoDbConnection {
         this.db = mongoClient.getDatabase(DB_NAME);
         this.cartes = this.db.getCollection(COL_CARTES, Carte.class);
     }
+
+    public static MongoDbConnection getMongoInstance(){
+        return instance == null ? new MongoDbConnection() : instance;
+    }
+
 
     public static void main(String[] args) {
         MongoDbConnection c = new MongoDbConnection();
@@ -120,7 +126,7 @@ public class MongoDbConnection {
     }
 
     public BsonObjectId addCarteByTitu(long idTitulaire) {
-        return this.insertCarte(new Carte().setIdTitulaire(idTitulaire));
+        return this.insertCarte(new Carte().setIdTitulaire(idTitulaire).setNbVoyages(0).setDateFinAbonnement(null).setDateDerniereValidation(null));
     }
 
     public BsonObjectId insertCarte(Carte carte) {
@@ -144,6 +150,7 @@ public class MongoDbConnection {
         this.cartes.find().forEach(res::add);
         return res;
     }
+
 
 
 }
