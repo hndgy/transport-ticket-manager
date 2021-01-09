@@ -7,6 +7,7 @@ import application.model.bdd.MySQLBddConnection;
 import application.model.bdd.pojos.Carte;
 import application.model.models.carteDeTransport.CarteDeTransportImpl;
 import application.model.models.exceptions.MailDejaUtiliseException;
+import application.model.models.utilisateur.IUtilisateur;
 import org.bson.types.ObjectId;
 
 import java.util.HashMap;
@@ -17,7 +18,8 @@ public class FacadeImpl implements IFacade {
 
 
 
-    private Map<Long, Long> connectedUsers;
+
+    private Map<Long, IUtilisateur> connectedUsers;
     private MySQLBddConnection mySQLBddConnection;
     private MongoDbConnection mongoDbConnection;
 
@@ -45,7 +47,7 @@ public class FacadeImpl implements IFacade {
 
     @Override
     public boolean desinscrire(UserDesinscriptionDTO userDesinscriptionDTO) {
-        mongoDbConnection.removeCarteByTitu(this.mySQLBddConnection.getUserByMailAndMdp(userDesinscriptionDTO.getMail(), userDesinscriptionDTO.getMdp()));
+        mongoDbConnection.removeCarteByTitu(this.mySQLBddConnection.getUserByMailAndMdp(userDesinscriptionDTO.getMail(), userDesinscriptionDTO.getMdp()).getId());
         return this.mySQLBddConnection.deleteUser(userDesinscriptionDTO.getMail(), userDesinscriptionDTO.getMdp());
 
     }
@@ -53,9 +55,9 @@ public class FacadeImpl implements IFacade {
     @Override
     public long connecter(UserConnexionDTO userConnexionDTO) {
         var user = mySQLBddConnection.getUserByMailAndMdp(userConnexionDTO.getMail(), userConnexionDTO.getMdp());
-        if (user != -1 ){
-            this.connectedUsers.put(user,user);
-            return user;
+        if (user != null ){
+            this.connectedUsers.put(user.getId(),user);
+            return user.getId();
         }
         return -1;
 
@@ -80,5 +82,10 @@ public class FacadeImpl implements IFacade {
     @Override
     public boolean validerTitre(long idCarte) {
         return false;
+    }
+
+    @Override
+    public boolean isConnected(long idUser) {
+        return true;
     }
 }

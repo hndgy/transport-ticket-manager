@@ -23,5 +23,6 @@ public interface IFacade {
 
     boolean validerTitre(long idCarte);
 
+    boolean isConnected(long idUser);
 
 }

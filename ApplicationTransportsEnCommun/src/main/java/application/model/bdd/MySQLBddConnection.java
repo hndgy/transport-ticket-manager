@@ -1,6 +1,15 @@
 package application.model.bdd;
 
+import application.model.models.utilisateur.IUtilisateur;
+
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.spec.KeySpec;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -8,9 +17,11 @@ public class MySQLBddConnection {
 
     private Connection connection;
 
+    // TABLES
     private static final String USER_TABLE = "`utilisateur`";
     private static final String TARIFS_TABLE = "`tarifs`";
 
+    // CHAINE DE CONNEXION
     private static final String CONNECTION_STRING = "jdbc:mysql://localhost/db?user=admin&password=password";
 
     private static MySQLBddConnection instance;
@@ -25,7 +36,7 @@ public class MySQLBddConnection {
         return instance == null ? new MySQLBddConnection() : instance;
     }
 
-    private MySQLBddConnection(){
+    public MySQLBddConnection(){
 
         try {
             this.connection = DriverManager.getConnection(CONNECTION_STRING);
@@ -36,12 +47,25 @@ public class MySQLBddConnection {
     }
 
 
-
+    /**
+     * Insert un utilisateur dans la base
+     * @param nom
+     * @param prenom
+     * @param mail
+     * @param mdp
+     * @return le dernier user créer dans la base
+     */
     public long createUser(String nom, String prenom, String mail, String mdp){
 
         long res = -1;
         try{
-
+           /*
+           // hachage du mdp
+           SecureRandom random = new SecureRandom();
+            byte[]salt = new byte[16];
+            random.nextBytes(salt);
+            KeySpec spec = new PBEKeySpec(mdp.toCharArray(), salt, 65536, 128);
+            SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");*/
             String sqlQuery =
                     "INSERT INTO "+USER_TABLE+"(`id`,`nom`,`prenom`,`mail`,`mdp`) " +
                     "VALUES (null,'" + nom + "','"+prenom +"','"+mail+"','"+mdp+"')";
@@ -56,11 +80,52 @@ public class MySQLBddConnection {
 
         } catch (SQLException ex){
            this.handleSqlError(ex);
-        }
+        }/* catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }*/
         return res;
     }
 
 
+    /**
+     *
+     * @return Tous les utilisateurs de la bases
+     */
+    public List<IUtilisateur> getAllUser(){
+        List<IUtilisateur> res = new ArrayList<>();
+        try{
+
+
+
+            Statement statement = this.connection.createStatement();
+            String sqlQuery = "SELECT * from "+USER_TABLE;
+            var resultSet = statement.executeQuery(sqlQuery); // true si l'insertion se passe bien
+
+            while (resultSet.next()){
+                // si il n'y pas de ligne avec le meme mail
+                var user = IUtilisateur.creerUtilisateur(
+                        resultSet.getInt("id"),
+                        resultSet.getString("prenom"),
+                        resultSet.getString("nom"),
+                        resultSet.getString("mail"),
+                        resultSet.getString("mdp")
+
+                        );
+                res.add(user);
+
+            }
+
+        } catch (SQLException ex){
+            this.handleSqlError(ex);
+        }
+        return res;
+    }
+
+    /**
+     * Verifie si un mail est déjà utilisé ou non
+     * @param mail
+     * @return false si il exite pas true sinon
+     */
     public boolean checkMail(String mail){
         try{
 
@@ -82,16 +147,28 @@ public class MySQLBddConnection {
     }
 
 
-    public long getUserByMailAndMdp(String mail, String mdp){
+    /**
+     * Recupere un utilisateur via son mail et son mdp
+     * @param mail
+     * @param mdp
+     * @return
+     */
+    public IUtilisateur getUserByMailAndMdp(String mail, String mdp){
 
-         long res = -1;
+        IUtilisateur res = null;
         try{
             Statement statement = this.connection.createStatement();
-            String sqlQuery = "SELECT id from "+USER_TABLE+ " WHERE mail = '"+ mail + "' AND mdp = '" + mdp+"'";
+            String sqlQuery = "SELECT * from "+USER_TABLE+ " WHERE mail = '"+ mail + "' AND mdp = '" + mdp+"'";
             var resultSet = statement.executeQuery(sqlQuery); // true si l'insertion se passe bien
 
-            while(resultSet.next()){
-                res = resultSet.getInt("id");
+            if(resultSet.next()){
+                res = IUtilisateur.creerUtilisateur(
+                        resultSet.getInt("id"),
+                        resultSet.getString("prenom"),
+                        resultSet.getString("nom"),
+                        resultSet.getString("mail"),
+                        resultSet.getString("mdp")
+                        );
             }
 
         } catch (SQLException ex){

@@ -40,7 +40,7 @@ public class MongoDbConnection {
     private static MongoDbConnection instance;
 
 
-    private MongoDbConnection() {
+    public MongoDbConnection() {
         ConnectionString connectionString = new ConnectionString("mongodb://" + USER + ":" + PASSWORD + "@" + HOST + ":27017/");
         //ConnectionString connectionString = new ConnectionString("mongodb://localhost:27017");
 
@@ -197,7 +197,6 @@ public class MongoDbConnection {
         this.cartes.find().forEach(res::add);
         return res;
     }
-
 
 
 }
