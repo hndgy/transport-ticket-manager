@@ -13,6 +13,8 @@ import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -37,8 +39,8 @@ public class MongoDbConnection {
 
 
     private MongoDbConnection() {
-        ConnectionString connectionString = new ConnectionString("mongodb://" + USER + ":" + PASSWORD + "@" + HOST + ":27017/");
-        //ConnectionString connectionString = new ConnectionString("mongodb://localhost:27017");
+        //ConnectionString connectionString = new ConnectionString("mongodb://" + USER + ":" + PASSWORD + "@" + HOST + ":27017/");
+        ConnectionString connectionString = new ConnectionString("mongodb://localhost:27017");
 
         CodecRegistry pojoCodecRegistry = fromProviders(PojoCodecProvider.builder().automatic(true).build());
         CodecRegistry codecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(), pojoCodecRegistry);
@@ -88,6 +90,10 @@ public class MongoDbConnection {
         System.out.println(c.updateNbVoyage(7,1));
         System.out.println(c.isValide(7));
         */
+        //System.out.println(c.addCarteByTitu(11));
+        //System.out.println(c.updateNbVoyage(11,1));
+        //System.out.println(c.updateAbonnement(11,12));
+        //System.out.println(c.isValide(11));
 
     }
 
@@ -137,12 +143,42 @@ public class MongoDbConnection {
         var carte = this.getCarteById(idTitulaire);
         if (LocalDate.now().isBefore(getFinAbo(carte.getIdTitulaire()))) {
             return true;
-        } else if (carte.getNbVoyages() > 0) {
+        }
+        else if (carte.getDateDerniereValidation() != null) {
+            if (LocalDateTime.now().isBefore(carte.getDateDerniereValidation().plusMinutes(1))) {
+                return true;
+            }
+            else if (carte.getNbVoyages() > 0) {
+                carte.setNbVoyages(carte.getNbVoyages() - 1);
+                this.updateDateValidation(carte.getIdTitulaire());
+                this.updateNbVoyage(carte.getIdTitulaire(), -1);
+                return true;
+            }
+        }
+        else if (carte.getNbVoyages() > 0) {
             carte.setNbVoyages(carte.getNbVoyages() - 1);
+            this.updateDateValidation(carte.getIdTitulaire());
             this.updateNbVoyage(carte.getIdTitulaire(), -1);
             return true;
         }
         return false;
+    }
+
+    public LocalDateTime getDateValidation(long idTitulaire) {
+        if (this.cartes.find(new Document("id_titulaire", idTitulaire)).first().getDateDerniereValidation() == null) {
+            return (Objects.requireNonNull(this.cartes.find(new Document("id_titulaire", idTitulaire)).first()).setDateDerniereValidation(LocalDateTime.now()).getDateDerniereValidation());
+        }
+        else {
+            return(this.cartes.find(new Document("id_titulaire", idTitulaire)).first().setDateDerniereValidation(LocalDateTime.now()).getDateDerniereValidation());
+        }
+    }
+
+    public long updateDateValidation(long idTitulaire) {
+        var updateRes = this.cartes.updateOne(
+                new Document("id_titulaire", idTitulaire),
+                new Document("$set",
+                        new Document("date_derniere_validation", getDateValidation(idTitulaire))));
+        return updateRes.getModifiedCount();
     }
 
     public List<Carte> getAllCarte() {
