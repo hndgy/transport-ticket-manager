@@ -222,9 +222,9 @@ public class MySQLBddConnection {
         try {
             Statement statement = this.connection.createStatement();
             String sqlQuery =
-                    "INSERT INTO abonnement VALUES"+ "(null,DATE(NOW()),DATE_ADD(DATE(NOW()), INTERVAL 1 MONTH),"
-                    +userID
-                    +",1)";
+                    "INSERT INTO abonnement VALUES"+ "(null,DATE(NOW()),DATE_ADD(DATE(NOW()), INTERVAL 1 MONTH),1,"
+                            +userID
+                            +")";
             statement.execute(sqlQuery);
             return true;
         } catch (SQLException throwables) {
@@ -237,9 +237,9 @@ public class MySQLBddConnection {
         try {
             Statement statement = this.connection.createStatement();
             String sqlQuery =
-                    "INSERT INTO abonnement VALUES"+ "(null,DATE(NOW()),DATE_ADD(DATE(NOW()), INTERVAL 1 YEAR),"
-                            +userID
-                            +",2)";
+                    "INSERT INTO abonnement VALUES"+ "(null,DATE(NOW()),DATE_ADD(DATE(NOW()), INTERVAL 1 YEAR),2,"
+                    +userID
+                    +")";
             statement.execute(sqlQuery);
             return true;
         } catch (SQLException throwables) {
