@@ -68,7 +68,7 @@ public class FacadeImpl implements IFacade {
 
     @Override
     public long souscrireUnAbonnement(SouscriptionDTO souscriptionDTO) {
-        return mongoDbConnection.updateAbonnement(souscriptionDTO.getId(), souscriptionDTO.getNbMois());
+        return mongoDbConnection.updateAbonnement(souscriptionDTO.getId(), souscriptionDTO.getTarif());
     }
 
     @Override

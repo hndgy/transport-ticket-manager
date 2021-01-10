@@ -218,6 +218,37 @@ public class MySQLBddConnection {
         return .0f;
     }
 
+    public boolean abonnementMensuel(long userID){
+        try {
+            Statement statement = this.connection.createStatement();
+            String sqlQuery =
+                    "INSERT INTO abonnement VALUES"+ "(null,DATE(NOW()),DATE_ADD(DATE(NOW()), INTERVAL 1 MONTH),"
+                    +userID
+                    +",1)";
+            statement.execute(sqlQuery);
+            return true;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean abonnementAnnuel(long userID){
+        try {
+            Statement statement = this.connection.createStatement();
+            String sqlQuery =
+                    "INSERT INTO abonnement VALUES"+ "(null,DATE(NOW()),DATE_ADD(DATE(NOW()), INTERVAL 1 YEAR),"
+                            +userID
+                            +",2)";
+            statement.execute(sqlQuery);
+            return true;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return false;
+
+    }
+
     public static void main(String[] args) {
         MySQLBddConnection bdd = new MySQLBddConnection();
 
