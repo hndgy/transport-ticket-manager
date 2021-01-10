@@ -21,7 +21,7 @@ public interface IFacade {
 
     long commanderTitre(CommandeTitreDTO commandeTitreDTO);
 
-    boolean validerTitre(long idCarte);
+    boolean validerTitre(String idCarte);
 
     boolean isConnected(long idUser);
 
