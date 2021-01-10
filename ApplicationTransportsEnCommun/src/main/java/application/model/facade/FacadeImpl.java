@@ -5,7 +5,6 @@ import application.model.bdd.MongoDbConnection;
 import application.model.bdd.MySQLBddConnection;
 import application.model.models.exceptions.MailDejaUtiliseException;
 import application.model.models.utilisateur.IUtilisateur;
-import org.bson.types.ObjectId;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -65,15 +64,15 @@ public class FacadeImpl implements IFacade {
 
     @Override
     public boolean souscrireUnAbonnement(SouscriptionDTO souscriptionDTO) {
-        var carteId = mongoDbConnection.getCarteById(souscriptionDTO.getId()).getId().toHexString();
+        var carteId = mongoDbConnection.getCarteById(souscriptionDTO.getIdUser()).getId().toHexString();
 
         switch (souscriptionDTO.getType()) {
             case "mensuel":
-                mySQLBddConnection.abonnementMensuel(souscriptionDTO.getId());
+                mySQLBddConnection.abonnementMensuel(souscriptionDTO.getIdUser());
                 mongoDbConnection.updateAbonnement(carteId, 1);
                 return true;
             case "annuel":
-                mySQLBddConnection.abonnementAnnuel(souscriptionDTO.getId());
+                mySQLBddConnection.abonnementAnnuel(souscriptionDTO.getIdUser());
                 mongoDbConnection.updateAbonnement(carteId, 12);
                 return true;
         }
@@ -82,6 +81,7 @@ public class FacadeImpl implements IFacade {
 
     @Override
     public long commanderTitre(CommandeTitreDTO commandeTitreDTO) {
+
         return mongoDbConnection.updateNbVoyage(commandeTitreDTO.getIdCarte(), commandeTitreDTO.getNbTitre());
     }
 

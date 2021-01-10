@@ -206,7 +206,7 @@ public class MySQLBddConnection {
 
 
             Statement statement = this.connection.createStatement();
-            String sqlQuery = "SELECT prix from "+TARIFS_TABLE+ " WHERE type_produit = '"+ produit + "'";
+            String sqlQuery = "SELECT prix from "+TARIFS_TABLE+ " WHERE type_produit = '"+ produit + "' where actif = 1" ;
             var resultSet = statement.executeQuery(sqlQuery); // true si le delete se passe bien
             if (resultSet.next()){
                  return resultSet.getFloat("prix");
@@ -217,6 +217,28 @@ public class MySQLBddConnection {
         }
         return .0f;
     }
+
+    public void setTarif(String produit, float prix){
+        try{
+
+
+            Statement statement = this.connection.createStatement();
+            String sqlQuery1 = "UPDATE tarifs SET actif = 0 where type_produit = "+produit+" and actif = 1";
+            statement.execute(sqlQuery1);
+
+            String sqlQuery2 = "INSERT INTO tarifs VALUES(null, "+produit+","+prix+",1)";
+            statement.execute(sqlQuery2);
+
+
+        } catch (SQLException ex){
+            this.handleSqlError(ex);
+        }
+
+    }
+
+
+
+
 
     public boolean abonnementMensuel(long userID){
         try {
