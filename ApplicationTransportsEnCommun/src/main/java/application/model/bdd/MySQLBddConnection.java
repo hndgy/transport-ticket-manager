@@ -244,7 +244,8 @@ public class MySQLBddConnection {
         try {
             Statement statement = this.connection.createStatement();
             String sqlQuery =
-                    "INSERT INTO abonnement VALUES"+ "(null,DATE(NOW()),DATE_ADD(DATE(NOW()), INTERVAL 1 MONTH),1,"
+                    "INSERT INTO abonnement VALUES"+ "(null,DATE(NOW()),DATE_ADD(DATE(NOW()), INTERVAL 1 MONTH), "+
+                            getTarif("abonnement_mensuel")+","
                             +userID
                             +")";
             statement.execute(sqlQuery);
@@ -259,9 +260,10 @@ public class MySQLBddConnection {
         try {
             Statement statement = this.connection.createStatement();
             String sqlQuery =
-                    "INSERT INTO abonnement VALUES"+ "(null,DATE(NOW()),DATE_ADD(DATE(NOW()), INTERVAL 1 YEAR),2,"
-                    +userID
-                    +")";
+                    "INSERT INTO abonnement VALUES"+ "(null,DATE(NOW()),DATE_ADD(DATE(NOW()), INTERVAL 1 YEAR), "+
+                            getTarif("abonnement_annuel")+","
+                            +userID
+                            +")";
             statement.execute(sqlQuery);
             return true;
         } catch (SQLException throwables) {
@@ -270,6 +272,11 @@ public class MySQLBddConnection {
         return false;
 
     }
+
+    public void insertTicket(){
+
+    }
+
 
     public static void main(String[] args) {
         MySQLBddConnection bdd = new MySQLBddConnection();

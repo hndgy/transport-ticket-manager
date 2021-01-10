@@ -11,20 +11,24 @@ public class ProgrammeTest {
     public static void main(String[] args) {
 
         IFacade facade = IFacade.creerFacade();
-        /*
+
         try {
-           facade.inscrire(new UserInscriptionDTO("deguyenne","nicolas", "nico@tnndev.fr","12345"));
+           facade.inscrire(new UserInscriptionDTO("deguyenne","nicolas", "nicol@tnndev.fr","12345"));
         } catch (MailDejaUtiliseException e) {
             e.printStackTrace();
         }
-*/
-        var uid = facade.connecter(new UserConnexionDTO("nico@tnndev.fr","12345"));
+
+
+
+        var uid = facade.connecter(new UserConnexionDTO("nicol@tnndev.fr","12345"));
 
         System.out.println("Connected : "+facade.isConnected(uid));
 
 
         System.out.println("Abonnement mensuel : "+facade.souscrireUnAbonnement(new SouscriptionDTO(101, "mensuel")));
 
+
+        System.out.println("Valid [5ffb6ef29ee62c27054d3c06]: "+ facade.validerTitre(  "5ffb6ef29ee62c27054d3c06"));
 
 
         /*
