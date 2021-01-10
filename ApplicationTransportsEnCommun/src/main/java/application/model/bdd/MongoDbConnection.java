@@ -107,6 +107,11 @@ public class MongoDbConnection {
         return this.cartes.find(new Document("id_titulaire", idTitulaire)).first();
     }
 
+    public Carte getCarteByIdCarte(ObjectId idCarte) {
+        return this.cartes.find(new Document("_id", idCarte)).first();
+    }
+
+
     public LocalDate getFinAbo(long idTitulaire) {
         if (this.cartes.find(new Document("id_titulaire", idTitulaire)).first().getDateFinAbonnement() == null) {
             return (Objects.requireNonNull(this.cartes.find(new Document("id_titulaire", idTitulaire)).first())).setDateFinAbonnement(LocalDate.now()).getDateFinAbonnement();
@@ -152,8 +157,8 @@ public class MongoDbConnection {
     }
 
 
-    public boolean isValide(int idTitulaire) {
-        var carte = this.getCarteById(idTitulaire);
+    public boolean isValide(ObjectId idCarte) {
+        var carte = this.getCarteByIdCarte(idCarte);
         if (LocalDate.now().isBefore(getFinAbo(carte.getIdTitulaire()))) {
             return true;
         }
