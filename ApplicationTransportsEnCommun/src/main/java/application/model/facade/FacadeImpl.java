@@ -91,6 +91,6 @@ public class FacadeImpl implements IFacade {
 
     @Override
     public boolean isConnected(long idUser) {
-        return true;
+        return this.connectedUsers.containsKey(idUser);
     }
 }

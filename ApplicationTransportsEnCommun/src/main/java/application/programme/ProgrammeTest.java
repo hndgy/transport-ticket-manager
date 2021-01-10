@@ -11,6 +11,7 @@ public class ProgrammeTest {
     public static void main(String[] args) {
 
         IFacade facade = IFacade.creerFacade();
+        /*
         long id;
 
 
@@ -36,6 +37,9 @@ public class ProgrammeTest {
         } catch (MailDejaUtiliseException e) {
             System.out.println(e.getMessage());
         }
+
+*/
+
 
 
 
