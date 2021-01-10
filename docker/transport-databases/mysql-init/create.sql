@@ -40,10 +40,13 @@ create table `ticket`
     `id`       int unsigned auto_increment,
     `id_tarif` int unsigned null,
     `nbVoyage` int null,
+    `id_user` int null,
     constraint `ticket_pk`
         primary key (`id`),
     constraint `ticket_tarifs_fk`
-        foreign key (`id_tarif`) references `tarifs` (`id`) on update cascade on delete set null
+        foreign key (`id_tarif`) references `tarifs` (`id`) on update cascade on delete set null,
+    constraint `ticket_user_fk`
+        foreign key (`id_user`) references `utilisateur` (`id`) on update cascade on delete set null
 );
 
 
