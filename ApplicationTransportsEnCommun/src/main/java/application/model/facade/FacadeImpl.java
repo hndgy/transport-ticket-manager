@@ -4,11 +4,8 @@ import application.model.DTO.*;
 import application.model.bdd.MongoDbConnection;
 import application.model.bdd.MySQLBddConnection;
 
-import application.model.bdd.pojos.Carte;
-import application.model.models.carteDeTransport.CarteDeTransportImpl;
 import application.model.models.exceptions.MailDejaUtiliseException;
 import application.model.models.utilisateur.IUtilisateur;
-import org.bson.types.ObjectId;
 
 import java.util.HashMap;
 
@@ -70,8 +67,8 @@ public class FacadeImpl implements IFacade {
     }
 
     @Override
-    public boolean souscrireUnAbonnement(SouscriptionDTO souscriptionDTO) {
-        return false;
+    public long souscrireUnAbonnement(SouscriptionDTO souscriptionDTO) {
+        return mongoDbConnection.updateAbonnement(souscriptionDTO.getId(), souscriptionDTO.getNbMois());
     }
 
     @Override

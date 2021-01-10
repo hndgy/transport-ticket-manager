@@ -3,18 +3,18 @@ package application.model.DTO;
 public class SouscriptionDTO {
 
     private long id;
-    private int type;
+    private int nbMois;
 
-    public SouscriptionDTO(long id, int type) {
+    public SouscriptionDTO(long id, int nbMois) {
         this.id = id;
-        this.type = type;
+        this.nbMois = nbMois;
     }
 
     public long getId() {
         return id;
     }
 
-    public int getType() {
-        return type;
+    public int getNbMois() {
+        return nbMois;
     }
 }
