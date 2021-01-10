@@ -15,6 +15,7 @@ CREATE TABLE `tarifs`
     `id`           int unsigned NOT NULL auto_increment,
     `type_produit` varchar(255)  default NULL,
     `prix`         decimal(5, 2) default 0,
+    `actif`        boolean       default false,
     PRIMARY KEY (`id`)
 ) AUTO_INCREMENT = 1;
 
@@ -22,8 +23,8 @@ CREATE TABLE `tarifs`
 CREATE TABLE `abonnement`
 (
     `id`         int unsigned auto_increment,
-    `date_debut` datetime null,
-    `date_fin`   datetime null,
+    `date_debut` datetime     null,
+    `date_fin`   datetime     null,
     `id_tarif`   int unsigned null,
     `id_user`    int unsigned null,
     constraint `abonnement_pk`
@@ -39,8 +40,8 @@ create table `ticket`
 (
     `id`       int unsigned auto_increment,
     `id_tarif` int unsigned null,
-    `nbVoyage` int null,
-    `id_user` int null,
+    `nbVoyage` int          null,
+    `id_user`  int unsigned null,
     constraint `ticket_pk`
         primary key (`id`),
     constraint `ticket_tarifs_fk`
