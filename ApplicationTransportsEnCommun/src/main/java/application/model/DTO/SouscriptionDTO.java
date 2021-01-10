@@ -2,16 +2,16 @@ package application.model.DTO;
 
 public class SouscriptionDTO {
 
-    private long id;
+    private long idUser;
     private String type;
 
-    public SouscriptionDTO(long id, String type) {
-        this.id = id;
+    public SouscriptionDTO(long idUser, String type) {
+        this.idUser = idUser;
         this.type = type;
     }
 
-    public long getId() {
-        return id;
+    public long getIdUser() {
+        return idUser;
     }
 
     public String getType() {

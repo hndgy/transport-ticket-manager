@@ -12,6 +12,22 @@ public class ProgrammeTest {
 
         IFacade facade = IFacade.creerFacade();
         /*
+        try {
+           facade.inscrire(new UserInscriptionDTO("deguyenne","nicolas", "nico@tnndev.fr","12345"));
+        } catch (MailDejaUtiliseException e) {
+            e.printStackTrace();
+        }
+*/
+        var uid = facade.connecter(new UserConnexionDTO("nico@tnndev.fr","12345"));
+
+        System.out.println("Connected : "+facade.isConnected(uid));
+
+
+        System.out.println("Abonnement mensuel : "+facade.souscrireUnAbonnement(new SouscriptionDTO(101, "mensuel")));
+
+
+
+        /*
         long id;
 
 
