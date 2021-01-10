@@ -30,6 +30,7 @@ public class MySQLBddConnection {
         System.out.println("SQLException: " + ex.getMessage());
         System.out.println("SQLState: " + ex.getSQLState());
         System.out.println("VendorError: " + ex.getErrorCode());
+        ex.printStackTrace();
     }
 
     public static MySQLBddConnection getInstance(){
@@ -206,24 +207,46 @@ public class MySQLBddConnection {
 
 
             Statement statement = this.connection.createStatement();
-            String sqlQuery = "SELECT prix from "+TARIFS_TABLE+ " WHERE type_produit = '"+ produit + "' where actif = 1" ;
+            String sqlQuery = "SELECT prix from "+TARIFS_TABLE+ " WHERE type_produit = '"+ produit + "' and actif = 1" ;
             var resultSet = statement.executeQuery(sqlQuery); // true si le delete se passe bien
             if (resultSet.next()){
                  return resultSet.getFloat("prix");
             }
 
         } catch (SQLException ex){
+
+
             this.handleSqlError(ex);
         }
         return .0f;
     }
+
+    public int getIdTarif(String produit){
+        try{
+
+
+            Statement statement = this.connection.createStatement();
+            String sqlQuery = "SELECT id from "+TARIFS_TABLE+ " WHERE type_produit = '"+ produit + "' and actif = 1" ;
+            var resultSet = statement.executeQuery(sqlQuery); // true si le delete se passe bien
+            if (resultSet.next()){
+                return resultSet.getInt("id");
+            }
+
+        } catch (SQLException ex){
+
+
+            this.handleSqlError(ex);
+        }
+        return -1;
+    }
+
 
     public void setTarif(String produit, float prix){
         try{
 
 
             Statement statement = this.connection.createStatement();
-            String sqlQuery1 = "UPDATE tarifs SET actif = 0 where type_produit = "+produit+" and actif = 1";
+            String sqlQuery1 = "UPDATE tarifs SET actif = 0 where type_produit = '"+produit+"' and actif = 1";
             statement.execute(sqlQuery1);
 
             String sqlQuery2 = "INSERT INTO tarifs VALUES(null, "+produit+","+prix+",1)";
@@ -286,15 +309,35 @@ public class MySQLBddConnection {
 
     }
 
-    public boolean insertTicket(long userID, int nbVoyage){
+    public boolean insertTicket1Voyage(long userID){
+        try {
+            Statement statement = this.connection.createStatement();
+            String sqlQuery =
+                    "INSERT INTO ticket VALUES (" +
+                            "null,"+
+                            getIdTarif("ticket_1_voyage")+","
+                            +1+","
+                            +userID+")";
+
+            System.out.println(sqlQuery);
+            statement.execute(sqlQuery);
+            return true;
+        } catch (SQLException throwables) {
+            this.handleSqlError(throwables);
+        }
+        return false;
+    }
+
+    public boolean insertTicket10Voyages(long userID){
         try {
             Statement statement = this.connection.createStatement();
             String sqlQuery =
                     "INSERT INTO ticket VALUES"+ "(" +
                             "null,"+
-                            getTarif("abonnement_annuel")+","
-                            +nbVoyage+","
+                            getIdTarif("ticket_10_voyages")+","
+                            +10+","
                             +userID+")";
+            System.out.println(sqlQuery);
             statement.execute(sqlQuery);
             return true;
         } catch (SQLException throwables) {

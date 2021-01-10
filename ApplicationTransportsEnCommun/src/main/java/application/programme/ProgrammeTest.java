@@ -1,11 +1,9 @@
 package application.programme;
 
-import application.model.DTO.SouscriptionDTO;
-import application.model.DTO.UserConnexionDTO;
-import application.model.DTO.UserDesinscriptionDTO;
-import application.model.DTO.UserInscriptionDTO;
+import application.model.DTO.*;
 import application.model.facade.IFacade;
 import application.model.models.exceptions.MailDejaUtiliseException;
+import application.model.models.exceptions.NbTitreNonValide;
 
 public class ProgrammeTest {
     public static void main(String[] args) {
@@ -13,19 +11,23 @@ public class ProgrammeTest {
         IFacade facade = IFacade.creerFacade();
 
         try {
-           facade.inscrire(new UserInscriptionDTO("deguyenne","nicolas", "nicol@tnndev.fr","12345"));
+           facade.inscrire(new UserInscriptionDTO("deguyenne","nicolas", "nicolas@tnndev.fr","12345"));
         } catch (MailDejaUtiliseException e) {
             e.printStackTrace();
         }
 
 
 
-        var uid = facade.connecter(new UserConnexionDTO("nicol@tnndev.fr","12345"));
+        var uid = facade.connecter(new UserConnexionDTO("nicolas@tnndev.fr","12345"));
 
         System.out.println("Connected : "+facade.isConnected(uid));
 
 
-        System.out.println("Abonnement mensuel : "+facade.souscrireUnAbonnement(new SouscriptionDTO(101, "mensuel")));
+        try {
+            facade.commanderTitre(new CommandeTitreDTO(uid, 10));
+        } catch (NbTitreNonValide nbTitreNonValide) {
+            nbTitreNonValide.printStackTrace();
+        }
 
 
         System.out.println("Valid [5ffb6ef29ee62c27054d3c06]: "+ facade.validerTitre(  "5ffb6ef29ee62c27054d3c06"));

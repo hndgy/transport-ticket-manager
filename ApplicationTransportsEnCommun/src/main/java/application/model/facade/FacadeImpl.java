@@ -4,6 +4,7 @@ import application.model.DTO.*;
 import application.model.bdd.MongoDbConnection;
 import application.model.bdd.MySQLBddConnection;
 import application.model.models.exceptions.MailDejaUtiliseException;
+import application.model.models.exceptions.NbTitreNonValide;
 import application.model.models.utilisateur.IUtilisateur;
 
 import java.util.HashMap;
@@ -79,8 +80,17 @@ public class FacadeImpl implements IFacade {
     }
 
     @Override
-    public void commanderTitre(CommandeTitreDTO commandeTitreDTO) {
-        mySQLBddConnection.insertTicket(commandeTitreDTO.getIdUser(),commandeTitreDTO.getNbTitre());
+    public void commanderTitre(CommandeTitreDTO commandeTitreDTO) throws NbTitreNonValide {
+        switch (commandeTitreDTO.getNbTitre()){
+            case 1 :
+                mySQLBddConnection.insertTicket1Voyage(commandeTitreDTO.getIdUser());
+                break;
+            case 10 :
+                mySQLBddConnection.insertTicket10Voyages(commandeTitreDTO.getIdUser());
+                break;
+            default:
+                throw new NbTitreNonValide();
+        }
          mongoDbConnection.updateNbVoyage(commandeTitreDTO.getIdUser(), commandeTitreDTO.getNbTitre());
     }
 

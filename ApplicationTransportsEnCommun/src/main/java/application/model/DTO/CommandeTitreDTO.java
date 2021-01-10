@@ -5,8 +5,8 @@ public class CommandeTitreDTO {
     private long idUser;
     private int nbTitre;
 
-    public CommandeTitreDTO(long idCarte, int nbTitre) {
-        this.idUser = idCarte;
+    public CommandeTitreDTO(long idUser, int nbTitre) {
+        this.idUser = idUser;
         this.nbTitre = nbTitre;
     }
 

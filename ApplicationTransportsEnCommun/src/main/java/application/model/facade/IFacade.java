@@ -2,6 +2,7 @@ package application.model.facade;
 
 import application.model.DTO.*;
 import application.model.models.exceptions.MailDejaUtiliseException;
+import application.model.models.exceptions.NbTitreNonValide;
 
 public interface IFacade {
 
@@ -19,7 +20,7 @@ public interface IFacade {
 
     boolean souscrireUnAbonnement(SouscriptionDTO souscriptionDTO);
 
-    void commanderTitre(CommandeTitreDTO commandeTitreDTO);
+    void commanderTitre(CommandeTitreDTO commandeTitreDTO) throws NbTitreNonValide;
 
     boolean validerTitre(String idCarte);
 
