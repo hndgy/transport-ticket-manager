@@ -146,9 +146,6 @@ public class MongoDbConnection {
         return this.cartes.insertOne(carte).getInsertedId().asObjectId();
     }
 
-    public DeleteResult removeCarteById(ObjectId id){
-        return this.cartes.deleteOne(new Document("id",id));
-    }
 
     public DeleteResult removeCarteByTitu(long idTitu){
         return this.cartes.deleteOne(new Document("id_titulaire", idTitu));

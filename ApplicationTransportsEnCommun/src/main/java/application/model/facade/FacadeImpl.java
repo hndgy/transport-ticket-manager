@@ -5,6 +5,7 @@ import application.model.bdd.MongoDbConnection;
 import application.model.bdd.MySQLBddConnection;
 import application.model.models.exceptions.MailDejaUtiliseException;
 import application.model.models.utilisateur.IUtilisateur;
+import org.bson.types.ObjectId;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -83,8 +84,14 @@ public class FacadeImpl implements IFacade {
     }
 
     @Override
-    public boolean validerTitre(long idCarte) {
-        return false;
+    public boolean validerTitre(String idCarte) {
+        ObjectId id = new ObjectId(idCarte);
+        boolean valid = mongoDbConnection.isValide(id);
+        if (valid){
+            return true;
+        }else{
+            return false;
+        }
     }
 
     @Override
