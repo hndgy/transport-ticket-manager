@@ -24,6 +24,7 @@ public class Fixture {
                    int rand = (int)(Math.random() * range) + min;
 
                    mongoDbConnection.addCarteByTitu(user.getId());
+                   mySQLBddConnection.abonnementAnnuel(user.getId());
                });
 
 

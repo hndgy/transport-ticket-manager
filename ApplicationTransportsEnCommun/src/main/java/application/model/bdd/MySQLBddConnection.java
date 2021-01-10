@@ -228,7 +228,7 @@ public class MySQLBddConnection {
             statement.execute(sqlQuery);
             return true;
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            this.handleSqlError(throwables);
         }
         return false;
     }
@@ -243,7 +243,7 @@ public class MySQLBddConnection {
             statement.execute(sqlQuery);
             return true;
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            this.handleSqlError(throwables);
         }
         return false;
 

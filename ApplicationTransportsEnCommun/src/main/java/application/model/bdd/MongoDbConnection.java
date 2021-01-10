@@ -93,9 +93,9 @@ public class MongoDbConnection {
         System.out.println(c.isValide(7));
         */
         //System.out.println(c.addCarteByTitu(11));
-        //System.out.println(c.updateNbVoyage(11,1));
-        //System.out.println(c.updateAbonnement(11,12));
-        //System.out.println(c.isValide(11));
+        //        //System.out.println(c.updateNbVoyage(11,1));
+        //        //System.out.println(c.updateAbonnement(11,12));
+        //        //System.out.println(c.isValide(11));
 
     }
 
@@ -116,6 +116,7 @@ public class MongoDbConnection {
         }
         return Objects.requireNonNull(this.cartes.find(new Document("id_titulaire", idTitulaire)).first()).getDateFinAbonnement();
     }
+
 
     public long updateNbVoyage(long idTitulaire, int nbVoyagePlusMoins) {
         var updateRes = this.cartes.updateOne(
@@ -142,6 +143,7 @@ public class MongoDbConnection {
     }
 
     public DeleteResult removeCarteById(ObjectId id){
+
         return this.cartes.deleteOne(new Document("id",id));
     }
 
