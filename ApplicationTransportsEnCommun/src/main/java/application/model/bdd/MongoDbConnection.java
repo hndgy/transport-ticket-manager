@@ -107,8 +107,8 @@ public class MongoDbConnection {
         return this.cartes.find(new Document("id_titulaire", idTitulaire)).first();
     }
 
-    public Carte getCarteByIdCarte(ObjectId idCarte) {
-        return this.cartes.find(new Document("_id", idCarte)).first();
+    public Carte getCarteByIdCarte(String idCarte) {
+        return this.cartes.find(new Document("_id", new ObjectId(idCarte))).first();
     }
 
 
@@ -123,9 +123,9 @@ public class MongoDbConnection {
     }
 
 
-    public long updateNbVoyage(long idTitulaire, int nbVoyagePlusMoins) {
+    public long updateNbVoyage(String idCarte, int nbVoyagePlusMoins) {
         var updateRes = this.cartes.updateOne(
-                new Document("id_titulaire", idTitulaire),
+                new Document("_id", new ObjectId(idCarte)),
                 new Document("$inc",
                         new Document("nb_voyages", nbVoyagePlusMoins)));
         return updateRes.getModifiedCount();
@@ -157,7 +157,7 @@ public class MongoDbConnection {
     }
 
 
-    public boolean isValide(ObjectId idCarte) {
+    public boolean isValide(String idCarte) {
         var carte = this.getCarteByIdCarte(idCarte);
         if (LocalDate.now().isBefore(getFinAbo(carte.getIdTitulaire()))) {
             return true;
@@ -169,14 +169,14 @@ public class MongoDbConnection {
             else if (carte.getNbVoyages() > 0) {
                 carte.setNbVoyages(carte.getNbVoyages() - 1);
                 this.updateDateValidation(carte.getIdTitulaire());
-                this.updateNbVoyage(carte.getIdTitulaire(), -1);
+                this.updateNbVoyage(idCarte, -1);
                 return true;
             }
         }
         else if (carte.getNbVoyages() > 0) {
             carte.setNbVoyages(carte.getNbVoyages() - 1);
             this.updateDateValidation(carte.getIdTitulaire());
-            this.updateNbVoyage(carte.getIdTitulaire(), -1);
+            this.updateNbVoyage(idCarte, -1);
             return true;
         }
         return false;

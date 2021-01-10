@@ -1,5 +1,8 @@
 package application.model.bdd;
 
+import application.model.DTO.CommandeTitreDTO;
+import application.model.facade.IFacade;
+
 public class Fixture {
 
 
@@ -15,6 +18,9 @@ public class Fixture {
         MySQLBddConnection mySQLBddConnection = new MySQLBddConnection();
 
         MongoDbConnection mongoDbConnection = new MongoDbConnection();
+
+        IFacade facade = IFacade.creerFacade();
+
         int max = 1;
         int min = 3;
         int range = max - min + 1;
@@ -23,8 +29,10 @@ public class Fixture {
                user -> {
                    int rand = (int)(Math.random() * range) + min;
 
-                   mongoDbConnection.addCarteByTitu(user.getId());
-                   mySQLBddConnection.abonnementAnnuel(user.getId());
+                   String id = mongoDbConnection.addCarteByTitu(user.getId()).getValue().toHexString();
+
+                   CommandeTitreDTO commandeTitreDTO = new CommandeTitreDTO(id, 10);
+                   facade.commanderTitre(commandeTitreDTO);
                });
 
 

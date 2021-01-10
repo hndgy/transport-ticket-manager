@@ -2,15 +2,15 @@ package application.model.DTO;
 
 public class CommandeTitreDTO {
 
-    private long idCarte;
+    private String idCarte;
     private int nbTitre;
 
-    public CommandeTitreDTO(long idCarte,int nbTitre) {
+    public CommandeTitreDTO(String idCarte,int nbTitre) {
         this.idCarte = idCarte;
         this.nbTitre = nbTitre;
     }
 
-    public long getIdCarte() {
+    public String getIdCarte() {
         return idCarte;
     }
 
