@@ -17,7 +17,7 @@ public interface IFacade {
 
     boolean deconnecter(long idUser);
 
-    long souscrireUnAbonnement(SouscriptionDTO souscriptionDTO);
+    boolean souscrireUnAbonnement(SouscriptionDTO souscriptionDTO);
 
     long commanderTitre(CommandeTitreDTO commandeTitreDTO);
 

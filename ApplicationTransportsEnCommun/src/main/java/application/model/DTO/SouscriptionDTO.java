@@ -3,18 +3,18 @@ package application.model.DTO;
 public class SouscriptionDTO {
 
     private long id;
-    private int tarif;
+    private String type;
 
-    public SouscriptionDTO(long id, int tarif) {
+    public SouscriptionDTO(long id, String type) {
         this.id = id;
-        this.tarif = tarif;
+        this.type = type;
     }
 
     public long getId() {
         return id;
     }
 
-    public int getTarif() {
-        return tarif;
+    public String getType() {
+        return type;
     }
 }

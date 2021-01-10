@@ -3,42 +3,38 @@ package application.model.facade;
 import application.model.DTO.*;
 import application.model.bdd.MongoDbConnection;
 import application.model.bdd.MySQLBddConnection;
-
 import application.model.models.exceptions.MailDejaUtiliseException;
 import application.model.models.utilisateur.IUtilisateur;
 
 import java.util.HashMap;
-
 import java.util.Map;
 
 public class FacadeImpl implements IFacade {
 
 
-
-
+    private static FacadeImpl instance;
     private Map<Long, IUtilisateur> connectedUsers;
     private MySQLBddConnection mySQLBddConnection;
     private MongoDbConnection mongoDbConnection;
 
-    private static FacadeImpl instance;
-    public static FacadeImpl getInstance(){
-        return instance == null ? new FacadeImpl() : instance;
-    }
-    private FacadeImpl(){
+    private FacadeImpl() {
         this.mySQLBddConnection = MySQLBddConnection.getInstance();
         this.connectedUsers = new HashMap<>();
-        this.mongoDbConnection =  MongoDbConnection.getMongoInstance();
+        this.mongoDbConnection = MongoDbConnection.getMongoInstance();
+    }
+
+    public static FacadeImpl getInstance() {
+        return instance == null ? new FacadeImpl() : instance;
     }
 
     @Override
     public long inscrire(UserInscriptionDTO userInscriptionDTO) throws MailDejaUtiliseException {
         boolean checkMail = mySQLBddConnection.checkMail(userInscriptionDTO.getMail());
-        if(checkMail){
-            long idTitu =  mySQLBddConnection.createUser(userInscriptionDTO.getNom(), userInscriptionDTO.getPrenom(), userInscriptionDTO.getMail(), userInscriptionDTO.getMotDePasse());
+        if (checkMail) {
+            long idTitu = mySQLBddConnection.createUser(userInscriptionDTO.getNom(), userInscriptionDTO.getPrenom(), userInscriptionDTO.getMail(), userInscriptionDTO.getMotDePasse());
             mongoDbConnection.addCarteByTitu(idTitu);
             return idTitu;
-        }
-        else throw new MailDejaUtiliseException(userInscriptionDTO.getMail());
+        } else throw new MailDejaUtiliseException(userInscriptionDTO.getMail());
 
     }
 
@@ -52,8 +48,8 @@ public class FacadeImpl implements IFacade {
     @Override
     public long connecter(UserConnexionDTO userConnexionDTO) {
         var user = mySQLBddConnection.getUserByMailAndMdp(userConnexionDTO.getMail(), userConnexionDTO.getMdp());
-        if (user != null ){
-            this.connectedUsers.put(user.getId(),user);
+        if (user != null) {
+            this.connectedUsers.put(user.getId(), user);
             return user.getId();
         }
         return -1;
@@ -67,13 +63,23 @@ public class FacadeImpl implements IFacade {
     }
 
     @Override
-    public long souscrireUnAbonnement(SouscriptionDTO souscriptionDTO) {
-        return mongoDbConnection.updateAbonnement(souscriptionDTO.getId(), souscriptionDTO.getTarif());
+    public boolean souscrireUnAbonnement(SouscriptionDTO souscriptionDTO) {
+        switch (souscriptionDTO.getType()) {
+            case "mensuel":
+                mySQLBddConnection.abonnementMensuel(souscriptionDTO.getId());
+                mongoDbConnection.updateAbonnement(souscriptionDTO.getId(), 1);
+                return true;
+            case "annuel":
+                mySQLBddConnection.abonnementAnnuel(souscriptionDTO.getId());
+                mongoDbConnection.updateAbonnement(souscriptionDTO.getId(), 12);
+                return true;
+        }
+        return false;
     }
 
     @Override
     public long commanderTitre(CommandeTitreDTO commandeTitreDTO) {
-        return mongoDbConnection.updateNbVoyage(commandeTitreDTO.getIdCarte(),commandeTitreDTO.getNbTitre());
+        return mongoDbConnection.updateNbVoyage(commandeTitreDTO.getIdCarte(), commandeTitreDTO.getNbTitre());
     }
 
     @Override
