@@ -25,4 +25,10 @@ public interface IFacade {
 
     boolean isConnected(long idUser);
 
+    //ADMIN
+    void setPrixAbonnementMensuel(float prix);
+    void setPrixAbonnementAnnuel(float prix);
+    void setPrixTicket1Voyage(float prix);
+    void setPrixTicket10Voyages(float prix);
+
 }

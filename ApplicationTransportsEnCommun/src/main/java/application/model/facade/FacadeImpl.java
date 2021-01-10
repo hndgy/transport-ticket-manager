@@ -95,4 +95,26 @@ public class FacadeImpl implements IFacade {
     public boolean isConnected(long idUser) {
         return this.connectedUsers.containsKey(idUser);
     }
+
+    @Override
+    public void setPrixAbonnementMensuel(float prix) {
+       mySQLBddConnection.setPrixAbonnementMensuel(prix);
+    }
+
+    @Override
+    public void setPrixAbonnementAnnuel(float prix) {
+        mySQLBddConnection.setPrixAbonnementAnnuel(prix);
+    }
+
+    @Override
+    public void setPrixTicket1Voyage(float prix) {
+        mySQLBddConnection.setPrixTicket1Voyage(prix);
+    }
+
+    @Override
+    public void setPrixTicket10Voyages(float prix) {
+        mySQLBddConnection.setPrixTicket10Voyages(prix);
+    }
+
+
 }

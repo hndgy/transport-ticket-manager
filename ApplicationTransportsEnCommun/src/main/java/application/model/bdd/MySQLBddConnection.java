@@ -236,6 +236,19 @@ public class MySQLBddConnection {
 
     }
 
+    public void setPrixAbonnementMensuel(float prix){
+        setTarif("abonnement_mensuel",prix);
+    }
+    public void setPrixAbonnementAnnuel(float prix){
+        setTarif("abonnement_annuel",prix);
+    }
+    public void setPrixTicket1Voyage(float prix){
+        setTarif("ticket_1_voyage",prix);
+    }
+    public void setPrixTicket10Voyages(float prix){
+        setTarif("ticket_10_voyages",prix);
+    }
+
 
 
 
