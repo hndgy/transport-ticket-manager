@@ -85,13 +85,8 @@ public class FacadeImpl implements IFacade {
 
     @Override
     public boolean validerTitre(String idCarte) {
-        ObjectId id = new ObjectId(idCarte);
-        boolean valid = mongoDbConnection.isValide(id);
-        if (valid){
-            return true;
-        }else{
-            return false;
-        }
+
+        return mongoDbConnection.isValide(idCarte);
     }
 
     @Override
