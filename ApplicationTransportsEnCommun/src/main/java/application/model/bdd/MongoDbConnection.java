@@ -112,14 +112,14 @@ public class MongoDbConnection {
     }
 
 
-    public LocalDate getFinAbo(long idTitulaire) {
-        if (this.cartes.find(new Document("id_titulaire", idTitulaire)).first().getDateFinAbonnement() == null) {
-            return (Objects.requireNonNull(this.cartes.find(new Document("id_titulaire", idTitulaire)).first())).setDateFinAbonnement(LocalDate.now()).getDateFinAbonnement();
+    public LocalDate getFinAbo(String idCarte) {
+        if (this.cartes.find(new Document("_id", new ObjectId(idCarte))).first().getDateFinAbonnement() == null) {
+            return (Objects.requireNonNull(this.cartes.find(new Document("_id", new ObjectId(idCarte))).first())).setDateFinAbonnement(LocalDate.now()).getDateFinAbonnement();
         }
-        if (Objects.requireNonNull(this.cartes.find(new Document("id_titulaire", idTitulaire)).first()).getDateFinAbonnement().isBefore(LocalDate.now())){
-            return (Objects.requireNonNull(this.cartes.find(new Document("id_titulaire", idTitulaire)).first())).setDateFinAbonnement(LocalDate.now()).getDateFinAbonnement();
+        if (Objects.requireNonNull(this.cartes.find(new Document("_id", new ObjectId(idCarte))).first()).getDateFinAbonnement().isBefore(LocalDate.now())){
+            return (Objects.requireNonNull(this.cartes.find(new Document("_id", new ObjectId(idCarte))).first())).setDateFinAbonnement(LocalDate.now()).getDateFinAbonnement();
         }
-        return Objects.requireNonNull(this.cartes.find(new Document("id_titulaire", idTitulaire)).first()).getDateFinAbonnement();
+        return Objects.requireNonNull(this.cartes.find(new Document("_id", new ObjectId(idCarte))).first()).getDateFinAbonnement();
     }
 
 
@@ -131,11 +131,11 @@ public class MongoDbConnection {
         return updateRes.getModifiedCount();
     }
 
-    public long updateAbonnement(long idTitulaire, int nbMois) {
+    public long updateAbonnement(String idCarte, int nbMois) {
         var updateRes = this.cartes.updateOne(
-                new Document("id_titulaire", idTitulaire),
+                new Document("_id", new ObjectId(idCarte)),
                 new Document("$set",
-                        new Document("date_fin_abonnement", getFinAbo(idTitulaire).plusMonths(nbMois))));
+                        new Document("date_fin_abonnement", getFinAbo(idCarte).plusMonths(nbMois))));
         return updateRes.getModifiedCount();
     }
 
@@ -159,7 +159,7 @@ public class MongoDbConnection {
 
     public boolean isValide(String idCarte) {
         var carte = this.getCarteByIdCarte(idCarte);
-        if (LocalDate.now().isBefore(getFinAbo(carte.getIdTitulaire()))) {
+        if (LocalDate.now().isBefore(getFinAbo(String.valueOf(carte.getId())))) {
             return true;
         }
         else if (carte.getDateDerniereValidation() != null) {
