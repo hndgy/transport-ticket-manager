@@ -64,25 +64,24 @@ public class FacadeImpl implements IFacade {
 
     @Override
     public boolean souscrireUnAbonnement(SouscriptionDTO souscriptionDTO) {
-        var carteId = mongoDbConnection.getCarteById(souscriptionDTO.getIdUser()).getId().toHexString();
 
         switch (souscriptionDTO.getType()) {
             case "mensuel":
                 mySQLBddConnection.abonnementMensuel(souscriptionDTO.getIdUser());
-                mongoDbConnection.updateAbonnement(carteId, 1);
+                mongoDbConnection.updateAbonnement(souscriptionDTO.getIdUser(), 1);
                 return true;
             case "annuel":
                 mySQLBddConnection.abonnementAnnuel(souscriptionDTO.getIdUser());
-                mongoDbConnection.updateAbonnement(carteId, 12);
+                mongoDbConnection.updateAbonnement(souscriptionDTO.getIdUser(), 12);
                 return true;
         }
         return false;
     }
 
     @Override
-    public long commanderTitre(CommandeTitreDTO commandeTitreDTO) {
-
-        return mongoDbConnection.updateNbVoyage(commandeTitreDTO.getIdCarte(), commandeTitreDTO.getNbTitre());
+    public void commanderTitre(CommandeTitreDTO commandeTitreDTO) {
+        mySQLBddConnection.insertTicket(commandeTitreDTO.getIdUser(),commandeTitreDTO.getNbTitre());
+         mongoDbConnection.updateNbVoyage(commandeTitreDTO.getIdUser(), commandeTitreDTO.getNbTitre());
     }
 
     @Override

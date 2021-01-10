@@ -286,8 +286,21 @@ public class MySQLBddConnection {
 
     }
 
-    public void insertTicket(){
-
+    public boolean insertTicket(long userID, int nbVoyage){
+        try {
+            Statement statement = this.connection.createStatement();
+            String sqlQuery =
+                    "INSERT INTO ticket VALUES"+ "(" +
+                            "null,"+
+                            getTarif("abonnement_annuel")+","
+                            +nbVoyage+","
+                            +userID+")";
+            statement.execute(sqlQuery);
+            return true;
+        } catch (SQLException throwables) {
+            this.handleSqlError(throwables);
+        }
+        return false;
     }
 
 

@@ -29,10 +29,7 @@ public class Fixture {
                user -> {
                    int rand = (int)(Math.random() * range) + min;
 
-                   String id = mongoDbConnection.addCarteByTitu(user.getId()).getValue().toHexString();
 
-                   CommandeTitreDTO commandeTitreDTO = new CommandeTitreDTO(id, 10);
-                   facade.commanderTitre(commandeTitreDTO);
                });
 
 

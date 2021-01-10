@@ -16,7 +16,6 @@ import org.bson.types.ObjectId;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -123,17 +122,17 @@ public class MongoDbConnection {
     }
 
 
-    public long updateNbVoyage(String idCarte, int nbVoyagePlusMoins) {
-        var updateRes = this.cartes.updateOne(
-                new Document("_id", new ObjectId(idCarte)),
+    public void updateNbVoyage(long idUser, int nbVoyagePlusMoins) {
+         this.cartes.updateOne(
+                new Document("id_titulaire", idUser),
                 new Document("$inc",
                         new Document("nb_voyages", nbVoyagePlusMoins)));
-        return updateRes.getModifiedCount();
     }
 
-    public long updateAbonnement(String idCarte, int nbMois) {
+    public long updateAbonnement(long idUser, int nbMois) {
+        var idCarte = getCarteById(idUser).getId().toHexString();
         var updateRes = this.cartes.updateOne(
-                new Document("_id", new ObjectId(idCarte)),
+                new Document("id_titulaire", idUser ),
                 new Document("$set",
                         new Document("date_fin_abonnement", getFinAbo(idCarte).plusMonths(nbMois))));
         return updateRes.getModifiedCount();
@@ -159,7 +158,8 @@ public class MongoDbConnection {
 
     public boolean isValide(String idCarte) {
         var carte = this.getCarteByIdCarte(idCarte);
-        if (LocalDate.now().isBefore(getFinAbo(String.valueOf(carte.getId())))) {
+        var userId = carte.getIdTitulaire();
+        if (LocalDate.now().isBefore(getFinAbo(carte.getId().toHexString()))) {
             return true;
         }
         else if (carte.getDateDerniereValidation() != null) {
@@ -169,14 +169,14 @@ public class MongoDbConnection {
             else if (carte.getNbVoyages() > 0) {
                 carte.setNbVoyages(carte.getNbVoyages() - 1);
                 this.updateDateValidation(carte.getIdTitulaire());
-                this.updateNbVoyage(idCarte, -1);
+                this.updateNbVoyage(userId, -1);
                 return true;
             }
         }
         else if (carte.getNbVoyages() > 0) {
             carte.setNbVoyages(carte.getNbVoyages() - 1);
             this.updateDateValidation(carte.getIdTitulaire());
-            this.updateNbVoyage(idCarte, -1);
+            this.updateNbVoyage(userId, -1);
             return true;
         }
         return false;
