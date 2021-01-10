@@ -10,10 +10,10 @@ INSERT INTO `utilisateur` (`nom`,`prenom`,`mail`,`mdp`) VALUES ("Kylan","Shelby"
 INSERT INTO `utilisateur` (`nom`,`prenom`,`mail`,`mdp`) VALUES ("Wallace","Driscoll","odio.semper.cursus@Namligulaelit.co.uk","AWN28KQL0ZL"),("Jared","Fiona","ut@eros.co.uk","LLL64RRU7AB"),("Stephen","Mallory","ut.mi@consequatpurusMaecenas.co.uk","IBZ29PTX7MH"),("Yoshi","Raja","odio.Nam@pharetra.edu","PRB06UAE1FP"),("Shaeleigh","Jaquelyn","justo.nec.ante@laoreetlectusquis.net","LMM42HKA4MV"),("Eliana","Aladdin","purus.Duis.elementum@sem.com","IBV85CAH6JA"),("Yardley","Risa","sit.amet.ultricies@euligulaAenean.co.uk","LRB23JKH1BR"),("Zenaida","Fletcher","gravida.non@senectus.co.uk","LID85JMT8WU"),("Todd","Galvin","et.commodo.at@aliquet.ca","RJE31GHK7SN"),("Thor","Colette","Etiam@Donecvitaeerat.co.uk","PJQ40GUO0UL");
 
 
-insert into `tarifs` values (null, 'abonnement_mensuel',50.99);
-insert into `tarifs` values (null, 'abonnement_annuel',500.99);
-insert into `tarifs` values (null, 'ticket_10_voyages',20.99);
-insert into `tarifs` values (null, 'ticket_1_voyage',3);
+insert into `tarifs` values (null, 'abonnement_mensuel',50.99,true);
+insert into `tarifs` values (null, 'abonnement_annuel',500.99,true);
+insert into `tarifs` values (null, 'ticket_10_voyages',20.99,true);
+insert into `tarifs` values (null, 'ticket_1_voyage',3,true);
 
 insert into `abonnement` values(null,'2020-09-20','2021-01-20',2,1);
 insert into `abonnement` values(null,'2021-02-12','2021-03-12',1,2);
