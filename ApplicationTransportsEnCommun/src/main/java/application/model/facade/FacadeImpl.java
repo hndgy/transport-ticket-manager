@@ -3,6 +3,7 @@ package application.model.facade;
 import application.model.DTO.*;
 import application.model.bdd.MongoDbConnection;
 import application.model.bdd.MySQLBddConnection;
+import application.model.bdd.pojos.Carte;
 import application.model.models.carteDeTransport.produits.ticket.ITicket;
 import application.model.models.exceptions.MailDejaUtiliseException;
 import application.model.models.exceptions.NbTitreNonValide;
@@ -115,6 +116,16 @@ public class FacadeImpl implements IFacade {
     @Override
     public boolean isConnected(long idUser) {
         return this.connectedUsers.containsKey(idUser);
+    }
+
+    @Override
+    public Carte getCarteByIdTitu(long idTitu) {
+        return mongoDbConnection.getCarteById(idTitu);
+    }
+
+    @Override
+    public int getNbVoyage(long idTitu) {
+        return mongoDbConnection.getNbVoyage(idTitu);
     }
 
     @Override
