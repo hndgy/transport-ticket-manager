@@ -56,7 +56,7 @@ public class MongoDbConnection {
         this.cartes = this.db.getCollection(COL_CARTES, Carte.class);
     }
 
-    public static MongoDbConnection getMongoInstance(){
+    public static MongoDbConnection getMongoInstance() {
         return instance == null ? new MongoDbConnection() : instance;
     }
 
@@ -115,7 +115,7 @@ public class MongoDbConnection {
         if (this.cartes.find(new Document("_id", new ObjectId(idCarte))).first().getDateFinAbonnement() == null) {
             return (Objects.requireNonNull(this.cartes.find(new Document("_id", new ObjectId(idCarte))).first())).setDateFinAbonnement(LocalDate.now()).getDateFinAbonnement();
         }
-        if (Objects.requireNonNull(this.cartes.find(new Document("_id", new ObjectId(idCarte))).first()).getDateFinAbonnement().isBefore(LocalDate.now())){
+        if (Objects.requireNonNull(this.cartes.find(new Document("_id", new ObjectId(idCarte))).first()).getDateFinAbonnement().isBefore(LocalDate.now())) {
             return (Objects.requireNonNull(this.cartes.find(new Document("_id", new ObjectId(idCarte))).first())).setDateFinAbonnement(LocalDate.now()).getDateFinAbonnement();
         }
         return Objects.requireNonNull(this.cartes.find(new Document("_id", new ObjectId(idCarte))).first()).getDateFinAbonnement();
@@ -123,7 +123,7 @@ public class MongoDbConnection {
 
 
     public void updateNbVoyage(long idUser, int nbVoyagePlusMoins) {
-         this.cartes.updateOne(
+        this.cartes.updateOne(
                 new Document("id_titulaire", idUser),
                 new Document("$inc",
                         new Document("nb_voyages", nbVoyagePlusMoins)));
@@ -132,7 +132,7 @@ public class MongoDbConnection {
     public long updateAbonnement(long idUser, int nbMois) {
         var idCarte = getCarteById(idUser).getId().toHexString();
         var updateRes = this.cartes.updateOne(
-                new Document("id_titulaire", idUser ),
+                new Document("id_titulaire", idUser),
                 new Document("$set",
                         new Document("date_fin_abonnement", getFinAbo(idCarte).plusMonths(nbMois))));
         return updateRes.getModifiedCount();
@@ -146,12 +146,12 @@ public class MongoDbConnection {
         return this.cartes.insertOne(carte).getInsertedId().asObjectId();
     }
 
-    public DeleteResult removeCarteById(ObjectId id){
+    public DeleteResult removeCarteById(ObjectId id) {
 
-        return this.cartes.deleteOne(new Document("id",id));
+        return this.cartes.deleteOne(new Document("id", id));
     }
 
-    public DeleteResult removeCarteByTitu(long idTitu){
+    public DeleteResult removeCarteByTitu(long idTitu) {
         return this.cartes.deleteOne(new Document("id_titulaire", idTitu));
     }
 
@@ -161,19 +161,16 @@ public class MongoDbConnection {
         var userId = carte.getIdTitulaire();
         if (LocalDate.now().isBefore(getFinAbo(carte.getId().toHexString()))) {
             return true;
-        }
-        else if (carte.getDateDerniereValidation() != null) {
+        } else if (carte.getDateDerniereValidation() != null) {
             if (LocalDateTime.now().isBefore(carte.getDateDerniereValidation().plusMinutes(1))) {
                 return true;
-            }
-            else if (carte.getNbVoyages() > 0) {
+            } else if (carte.getNbVoyages() > 0) {
                 carte.setNbVoyages(carte.getNbVoyages() - 1);
                 this.updateDateValidation(carte.getIdTitulaire());
                 this.updateNbVoyage(userId, -1);
                 return true;
             }
-        }
-        else if (carte.getNbVoyages() > 0) {
+        } else if (carte.getNbVoyages() > 0) {
             carte.setNbVoyages(carte.getNbVoyages() - 1);
             this.updateDateValidation(carte.getIdTitulaire());
             this.updateNbVoyage(userId, -1);
@@ -185,9 +182,8 @@ public class MongoDbConnection {
     public LocalDateTime getDateValidation(long idTitulaire) {
         if (this.cartes.find(new Document("id_titulaire", idTitulaire)).first().getDateDerniereValidation() == null) {
             return (Objects.requireNonNull(this.cartes.find(new Document("id_titulaire", idTitulaire)).first()).setDateDerniereValidation(LocalDateTime.now()).getDateDerniereValidation());
-        }
-        else {
-            return(this.cartes.find(new Document("id_titulaire", idTitulaire)).first().setDateDerniereValidation(LocalDateTime.now()).getDateDerniereValidation());
+        } else {
+            return (this.cartes.find(new Document("id_titulaire", idTitulaire)).first().setDateDerniereValidation(LocalDateTime.now()).getDateDerniereValidation());
         }
     }
 
