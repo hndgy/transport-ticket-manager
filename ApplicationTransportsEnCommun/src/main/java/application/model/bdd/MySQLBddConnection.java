@@ -221,6 +221,11 @@ public class MySQLBddConnection {
         return .0f;
     }
 
+    /**
+     *
+     * @param produit
+     * @return
+     */
     public int getIdTarif(String produit){
         try{
 

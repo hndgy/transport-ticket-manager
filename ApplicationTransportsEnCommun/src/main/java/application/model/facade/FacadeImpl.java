@@ -41,6 +41,10 @@ public class FacadeImpl implements IFacade {
 
     @Override
     public boolean desinscrire(UserDesinscriptionDTO userDesinscriptionDTO) {
+        long id  = mySQLBddConnection.getUserByMailAndMdp(userDesinscriptionDTO.getMail(), userDesinscriptionDTO.getMdp()).getId();
+        if(isConnected(id)){
+            this.deconnecter(id);
+        }
         mongoDbConnection.removeCarteByTitu(this.mySQLBddConnection.getUserByMailAndMdp(userDesinscriptionDTO.getMail(), userDesinscriptionDTO.getMdp()).getId());
         return this.mySQLBddConnection.deleteUser(userDesinscriptionDTO.getMail(), userDesinscriptionDTO.getMdp());
 
