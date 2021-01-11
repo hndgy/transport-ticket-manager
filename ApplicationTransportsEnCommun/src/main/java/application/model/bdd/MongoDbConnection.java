@@ -98,19 +98,39 @@ public class MongoDbConnection {
 
     }
 
+    /**
+     * Méthode qui permet de récuperer le nombre de voyage restant sur la carte de transport d'un utilisateur en passant son id en paramètre
+     * @param idTitulaire long qui correspond à l'id du titulaire de la carte de transport
+     * @return un int qui correspond au nombre de voyage restant
+     */
     public int getNbVoyage(long idTitulaire) {
         return this.cartes.find(new Document("id_titulaire", idTitulaire)).iterator().next().getNbVoyages();
     }
 
+    /**
+     * Méthode qui permet de récuperer une carte de transport en passant en paramètre l'id du titulaire de la carte
+     * @param idTitulaire long qui correspond à l'id du titulaire de la carte de transport
+     * @return une Carte (voir pojos) qui correspond a la carte de transport demandée
+     */
     public Carte getCarteById(long idTitulaire) {
         return this.cartes.find(new Document("id_titulaire", idTitulaire)).first();
     }
 
+    /**
+     * Méthode qui permet de récuperer une carte de transport en passant directement en paramètre l'id de la carte de transport
+     * @param idCarte String qui correspond à l'ObjectId de la carte de transport
+     * @return une Carte (voir pojos) qui correspond à la carte de transport demandée
+     */
     public Carte getCarteByIdCarte(String idCarte) {
         return this.cartes.find(new Document("_id", new ObjectId(idCarte))).first();
     }
 
 
+    /**
+     * Méthode qui permet de set la date de fin d'abonnement d'une carte de transport à la date de l'appel si elle n'en a pas ou si l'abonnement à déja expiré au moment de l'appel et de retourner cette date ou de retourner la date de fin de l'abonnement d'une carte
+     * @param idCarte String qui correspond à l'ObjectId de la carte de transport pour laquelle on veut récupérer l'abonnement
+     * @return une LocalDate qui correspond au jour de fin de l'abonnement ou à la date d'aujourd'hui si pas d'abonnement ou si abonnement expiré
+     */
     public LocalDate getFinAbo(String idCarte) {
         if (this.cartes.find(new Document("_id", new ObjectId(idCarte))).first().getDateFinAbonnement() == null) {
             return (Objects.requireNonNull(this.cartes.find(new Document("_id", new ObjectId(idCarte))).first())).setDateFinAbonnement(LocalDate.now()).getDateFinAbonnement();
@@ -122,6 +142,11 @@ public class MongoDbConnection {
     }
 
 
+    /**
+     * Méthode qui permet d'incrémenter ou de décrémenter avec le nombre que l'on veut le nombre de voyage restant sur la carte de transport d'un utilisateur passé en paramètre
+     * @param idUser long qui correspond à l'id de l'utilisateur
+     * @param nbVoyagePlusMoins int qui correspond au nombre de voyages qu'on va ajouter ou supprimer sur la carte
+     */
     public void updateNbVoyage(long idUser, int nbVoyagePlusMoins) {
         this.cartes.updateOne(
                 new Document("id_titulaire", idUser),
@@ -129,13 +154,20 @@ public class MongoDbConnection {
                         new Document("nb_voyages", nbVoyagePlusMoins)));
     }
 
-    public long updateAbonnement(long idUser, int nbMois) {
+    /**
+     * Méthode qui met à jour la date de fin d'abonnement d'une carte de transport pour un utilisateur passé en paramètre
+     * en rajoutant le nombre de mois (abonnement mensuel pour chaque mois ou annuel si 12 mois demandé) demandé par l'utilisateur que l'on a passé en paramètre
+     * en appelant la méthode getFinAbo() pour set ou récuperer la date de fin d'abonnement
+     * @param idUser long qui correspond à l'id de l'utilisateur qui achète un abonnement
+     * @param nbMois int qui correspond au nombre de mois demandé par l'utilisateur (1 mois pour abo mensuel ou 12 pour abo annuel)
+     */
+    public void updateAbonnement(long idUser, int nbMois) {
         var idCarte = getCarteById(idUser).getId().toHexString();
         var updateRes = this.cartes.updateOne(
                 new Document("id_titulaire", idUser),
                 new Document("$set",
-                        new Document("date_fin_abonnement", getFinAbo(idCarte).plusMonths(nbMois))));
-        return updateRes.getModifiedCount();
+                        new Document("date_fin_abonnement", getFinAbo(idCarte).plusMonths(nbMois)))
+        );
     }
 
     public BsonObjectId addCarteByTitu(long idTitulaire) {
