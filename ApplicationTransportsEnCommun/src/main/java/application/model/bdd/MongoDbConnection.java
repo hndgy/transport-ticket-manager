@@ -184,16 +184,56 @@ public class MongoDbConnection {
         return this.insertCarte(new Carte().setIdTitulaire(idTitulaire).setNbVoyages(0));
     }
 
-    public DeleteResult removeCarteById(ObjectId id) {
-        return this.cartes.deleteOne(new Document("_id", id));
+    /**
+     * Méthode qui permet de supprimer de la base une carte en prenant son id en paramètre
+     * @param idCarte ObjectId qui correspond à l'id de la carte que l'on veut supprimer
+     * @return le résultat de l'opération
+     */
+    public DeleteResult removeCarteById(ObjectId idCarte) {
+        return this.cartes.deleteOne(new Document("_id", idCarte));
     }
 
+    /**
+     * Méthode qui permet de supprimer de la base une carte en prenant l'id de son titulaire en paramètre
+     * @param idTitu long qui correspond à l'id du titulaire de la carte que l'on veut supprimer
+     * @return le résultat de l'opération
+     */
     public DeleteResult removeCarteByTitu(long idTitu) {
         return this.cartes.deleteOne(new Document("id_titulaire", idTitu));
     }
 
+    /**
+     * Méthode qui permet de set et de get la date de la dernière validation d'un ticket pour une carte à l'heure et la date de l'appel de cette méthode
+     * @param idTitulaire long qui correspond à l'id tu titulaire de la carte pour laquelle on veut enregistrer la dernière date de validation de ticket
+     * @return un LocalDateTime qui correspond à la date et heure de l'appel de cette fonction
+     */
+    public LocalDateTime getDateValidation(long idTitulaire) {
+        if (this.cartes.find(new Document("id_titulaire", idTitulaire)).first().getDateDerniereValidation() == null) {
+            return (Objects.requireNonNull(this.cartes.find(new Document("id_titulaire", idTitulaire)).first()).setDateDerniereValidation(LocalDateTime.now()).getDateDerniereValidation());
+        } else {
+            return (this.cartes.find(new Document("id_titulaire", idTitulaire)).first().setDateDerniereValidation(LocalDateTime.now()).getDateDerniereValidation());
+        }
+    }
 
+    /**
+     * Méthode qui en appelant getDateValidation() permet de mettre à jour la dernière date de validation quand un utilisateur valide un ticket
+     * @param idTitulaire long qui correspond à l'id du titulaire qui valide un ticket
+     */
+    public void updateDateValidation(long idTitulaire) {
+        var updateRes = this.cartes.updateOne(
+                new Document("id_titulaire", idTitulaire),
+                new Document("$set",
+                        new Document("date_derniere_validation", getDateValidation(idTitulaire))));
+    }
 
+    /**
+     * Méthode qui permet de vérifier si la carte de transport à un abonnement valide
+     * ou un titre de transport encore valide (dernière validation datant de moins d'une heure)
+     * ou pas de titre valide mais disponible qui va être consommer puis on met à jour la dernière date de validation en appellant updateDateValidation()
+     * @param idCarte String qui correspond à l'ObjectId de la carte que l'on veut valider
+     * @return true si la carte à un abonnement valide, ou un titre encore valide, ou un titre à valider (nombre de voyage supérieur à 0)
+     * et sinon false
+     */
     public boolean isValide(String idCarte) {
         var carte = this.getCarteByIdCarte(idCarte);
         var userId = carte.getIdTitulaire();
@@ -217,27 +257,14 @@ public class MongoDbConnection {
         return false;
     }
 
-    public LocalDateTime getDateValidation(long idTitulaire) {
-        if (this.cartes.find(new Document("id_titulaire", idTitulaire)).first().getDateDerniereValidation() == null) {
-            return (Objects.requireNonNull(this.cartes.find(new Document("id_titulaire", idTitulaire)).first()).setDateDerniereValidation(LocalDateTime.now()).getDateDerniereValidation());
-        } else {
-            return (this.cartes.find(new Document("id_titulaire", idTitulaire)).first().setDateDerniereValidation(LocalDateTime.now()).getDateDerniereValidation());
-        }
-    }
-
-    public long updateDateValidation(long idTitulaire) {
-        var updateRes = this.cartes.updateOne(
-                new Document("id_titulaire", idTitulaire),
-                new Document("$set",
-                        new Document("date_derniere_validation", getDateValidation(idTitulaire))));
-        return updateRes.getModifiedCount();
-    }
-
+    /**
+     * Méthode qui permet de retourner toutes les cartes de transport présente dans la base de donnée mongo
+     * @return une Liste de Carte contenant toutes les cartes de transport
+     */
     public List<Carte> getAllCarte() {
         List<Carte> res = new ArrayList<>();
         this.cartes.find().forEach(res::add);
         return res;
     }
-
 
 }
