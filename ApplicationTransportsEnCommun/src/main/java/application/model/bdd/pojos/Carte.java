@@ -6,6 +6,10 @@ import org.bson.types.ObjectId;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+/**
+ * Classe qui correspond au POJO de la carte de transport avec tous les getter et setter
+ * pour faire la liaison entre Mongo et Java
+ */
 public final class Carte {
 
     @BsonProperty("_id")
