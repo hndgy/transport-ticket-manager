@@ -1,8 +1,12 @@
 package application.model.facade;
 
 import application.model.DTO.*;
+import application.model.models.carteDeTransport.produits.ticket.ITicket;
 import application.model.models.exceptions.MailDejaUtiliseException;
 import application.model.models.exceptions.NbTitreNonValide;
+
+import java.util.Collection;
+import java.util.List;
 
 public interface IFacade {
 
@@ -23,6 +27,8 @@ public interface IFacade {
     void commanderTitre(CommandeTitreDTO commandeTitreDTO) throws NbTitreNonValide;
 
     boolean validerTitre(String idCarte);
+
+    List<ITicket> getTickets(long idUser);
 
     boolean isConnected(long idUser);
 
