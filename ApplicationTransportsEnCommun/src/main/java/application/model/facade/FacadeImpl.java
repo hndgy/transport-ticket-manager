@@ -3,11 +3,14 @@ package application.model.facade;
 import application.model.DTO.*;
 import application.model.bdd.MongoDbConnection;
 import application.model.bdd.MySQLBddConnection;
+import application.model.models.carteDeTransport.produits.ticket.ITicket;
 import application.model.models.exceptions.MailDejaUtiliseException;
 import application.model.models.exceptions.NbTitreNonValide;
 import application.model.models.utilisateur.IUtilisateur;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class FacadeImpl implements IFacade {
@@ -102,6 +105,11 @@ public class FacadeImpl implements IFacade {
     public boolean validerTitre(String idCarte) {
 
         return mongoDbConnection.isValide(idCarte);
+    }
+
+    @Override
+    public List<ITicket> getTickets(long idUser){
+        return mySQLBddConnection.getTicket_byUser(idUser);
     }
 
     @Override

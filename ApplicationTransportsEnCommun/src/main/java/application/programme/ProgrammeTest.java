@@ -2,6 +2,7 @@ package application.programme;
 
 import application.model.DTO.*;
 import application.model.facade.IFacade;
+import application.model.models.carteDeTransport.produits.ticket.ITicket;
 import application.model.models.exceptions.MailDejaUtiliseException;
 import application.model.models.exceptions.NbTitreNonValide;
 
@@ -15,22 +16,14 @@ public class ProgrammeTest {
         } catch (MailDejaUtiliseException e) {
             e.printStackTrace();
         }
-
-
-
         var uid = facade.connecter(new UserConnexionDTO("nicolas@tnndev.fr","12345"));
-
-        System.out.println("Connected : "+facade.isConnected(uid));
-
-
         try {
             facade.commanderTitre(new CommandeTitreDTO(uid, 10));
+            System.out.println("ok");
+            facade.getTickets(uid).stream().forEach(e -> System.out.println(e.getPrix()));
         } catch (NbTitreNonValide nbTitreNonValide) {
             nbTitreNonValide.printStackTrace();
         }
-
-
-        System.out.println("Valid [5ffb6ef29ee62c27054d3c06]: "+ facade.validerTitre(  "5ffb6ef29ee62c27054d3c06"));
 
 
         /*

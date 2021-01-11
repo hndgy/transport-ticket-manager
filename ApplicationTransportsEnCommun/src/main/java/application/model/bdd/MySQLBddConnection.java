@@ -1,5 +1,6 @@
 package application.model.bdd;
 
+import application.model.models.carteDeTransport.produits.ticket.ITicket;
 import application.model.models.utilisateur.IUtilisateur;
 
 import javax.crypto.SecretKeyFactory;
@@ -9,6 +10,7 @@ import java.security.SecureRandom;
 import java.security.spec.KeySpec;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -351,10 +353,38 @@ public class MySQLBddConnection {
         return false;
     }
 
+    public List<ITicket> getTicket_byUser(long userID) {
+        List<ITicket> ticketList = new ArrayList<>();
+        try {
+            Statement statement = this.connection.createStatement();
+            String sqlQuery =
+                    "SELECT * FROM ticket where id_user=" + userID;
+            var resultSet = statement.executeQuery(sqlQuery);
+            resultSet.next();
+            while (resultSet.next()) {
 
-    public static void main(String[] args) {
-        MySQLBddConnection bdd = new MySQLBddConnection();
+                int idTicket = resultSet.getInt("id");
+                ResultSet rsPrix = this.connection.createStatement().executeQuery(
+                        "SELECT prix FROM tarifs WHERE id = " + resultSet.getInt("id_tarif"));
+                rsPrix.next();
+                int prixTicket = rsPrix.getInt("prix");
 
-        System.out.println(bdd.getTarif("ticket_1_voyage"));
+                ResultSet rsType = this.connection.createStatement().executeQuery(
+                        "SELECT type_produit FROM tarifs WHERE id = " + resultSet.getInt("id_tarif"));
+                rsType.next();
+                String typeVoyage = rsType.getString("type_produit");
+
+                switch (typeVoyage) {
+                    case "ticket_1_voyage":
+                        ticketList.add(ITicket.creerTicket1Voyage(idTicket, prixTicket));
+                    case "ticket_10_voyages":
+                        ticketList.add(ITicket.creerTicket10Voyage(idTicket, prixTicket));
+                }
+            }
+            return ticketList;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return ticketList;
     }
 }
