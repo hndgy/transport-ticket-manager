@@ -63,16 +63,13 @@ public class MongoDbConnection {
 
     public static void main(String[] args) {
         MongoDbConnection c = new MongoDbConnection();
-
-/*
+        /*
         var res = c.insertCarte(new Carte()
                 .setIdTitulaire(2)
                 .setNbVoyages(0)
                 .setDateFinAbonnement(LocalDate.now().plusDays(10)));
-
         System.out.println(res.getValue());
-*/
-
+        */
         /*
         c.getAllCarte().stream().forEach(cr -> System.out.println(cr.getIdTitulaire()));
         System.out.println(c.updateNbVoyage(1, 4));
@@ -90,12 +87,11 @@ public class MongoDbConnection {
         System.out.println(c.addCarteByTitu(7));
         System.out.println(c.updateNbVoyage(7,1));
         System.out.println(c.isValide(7));
+        System.out.println(c.addCarteByTitu(11));
+        System.out.println(c.updateNbVoyage(11,1));
+        System.out.println(c.updateAbonnement(11,12));
+        System.out.println(c.isValide(11));
         */
-        //System.out.println(c.addCarteByTitu(11));
-        //        //System.out.println(c.updateNbVoyage(11,1));
-        //        //System.out.println(c.updateAbonnement(11,12));
-        //        //System.out.println(c.isValide(11));
-
     }
 
     /**
@@ -125,9 +121,10 @@ public class MongoDbConnection {
         return this.cartes.find(new Document("_id", new ObjectId(idCarte))).first();
     }
 
-
     /**
-     * Méthode qui permet de set la date de fin d'abonnement d'une carte de transport à la date de l'appel si elle n'en a pas ou si l'abonnement à déja expiré au moment de l'appel et de retourner cette date ou de retourner la date de fin de l'abonnement d'une carte
+     * Méthode qui permet de set la date de fin d'abonnement d'une carte de transport à la date de l'appel
+     * si elle n'en a pas ou si l'abonnement à déja expiré au moment de l'appel et de retourner cette date
+     * ou de retourner la date de fin de l'abonnement d'une carte
      * @param idCarte String qui correspond à l'ObjectId de la carte de transport pour laquelle on veut récupérer l'abonnement
      * @return une LocalDate qui correspond au jour de fin de l'abonnement ou à la date d'aujourd'hui si pas d'abonnement ou si abonnement expiré
      */
@@ -140,7 +137,6 @@ public class MongoDbConnection {
         }
         return Objects.requireNonNull(this.cartes.find(new Document("_id", new ObjectId(idCarte))).first()).getDateFinAbonnement();
     }
-
 
     /**
      * Méthode qui permet d'incrémenter ou de décrémenter avec le nombre que l'on veut le nombre de voyage restant sur la carte de transport d'un utilisateur passé en paramètre
@@ -157,7 +153,7 @@ public class MongoDbConnection {
     /**
      * Méthode qui met à jour la date de fin d'abonnement d'une carte de transport pour un utilisateur passé en paramètre
      * en rajoutant le nombre de mois (abonnement mensuel pour chaque mois ou annuel si 12 mois demandé) demandé par l'utilisateur que l'on a passé en paramètre
-     * en appelant la méthode getFinAbo() pour set ou récuperer la date de fin d'abonnement
+     * en appelant la méthode getFinAbo() pour set ou récupérer la date de fin d'abonnement
      * @param idUser long qui correspond à l'id de l'utilisateur qui achète un abonnement
      * @param nbMois int qui correspond au nombre de mois demandé par l'utilisateur (1 mois pour abo mensuel ou 12 pour abo annuel)
      */
@@ -170,22 +166,32 @@ public class MongoDbConnection {
         );
     }
 
-    public BsonObjectId addCarteByTitu(long idTitulaire) {
-        return this.insertCarte(new Carte().setIdTitulaire(idTitulaire).setNbVoyages(0));
-    }
-
+    /**
+     * Méthode qui permet d'insérer dans la bdd mongo une carte de transport passée en paramètre
+     * @param carte Carte qui correspond à la carte de transport que l'on veut insérer
+     * @return l'ObjectId de la carte que l'on a inséré
+     */
     public BsonObjectId insertCarte(Carte carte) {
         return this.cartes.insertOne(carte).getInsertedId().asObjectId();
     }
 
-    public DeleteResult removeCarteById(ObjectId id) {
+    /**
+     * Méthode qui permet d'insérer une carte de transport dans la bdd mongo pour un utilisateur passé en paramètre et un nbVoyages=0 et en appellant la méthode insertCarte()
+     * @param idTitulaire long qui correspond à l'id du titulaire de la carte que l'on va créer
+     * @return l'ObjectId de la carte que l'on a inséré
+     */
+    public BsonObjectId addCarteByTitu(long idTitulaire) {
+        return this.insertCarte(new Carte().setIdTitulaire(idTitulaire).setNbVoyages(0));
+    }
 
-        return this.cartes.deleteOne(new Document("id", id));
+    public DeleteResult removeCarteById(ObjectId id) {
+        return this.cartes.deleteOne(new Document("_id", id));
     }
 
     public DeleteResult removeCarteByTitu(long idTitu) {
         return this.cartes.deleteOne(new Document("id_titulaire", idTitu));
     }
+
 
 
     public boolean isValide(String idCarte) {
