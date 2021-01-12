@@ -53,7 +53,7 @@ public class VueModeTerminal {
                 .matcher(in);
          if (!matcher.find()){
 
-             this.erreur("Veuillez entrer un mail");
+             this.erreur("Veuillez rentrer un mail");
              this.inputMail();
          }
 
@@ -101,7 +101,7 @@ public class VueModeTerminal {
             try{
                 reponse = Integer.parseInt(in);
             }catch (NumberFormatException ex){
-                this.erreur("Veuillez en rentrer un nombre");
+                this.erreur("Veuillez choisir un nombre entre "+ 1 +" et "+listeChoix.size());
             }
 
 
