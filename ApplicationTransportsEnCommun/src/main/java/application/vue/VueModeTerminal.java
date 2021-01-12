@@ -86,14 +86,14 @@ public class VueModeTerminal {
     private int checkboxes(String question, List<String> listeChoix){
         int reponse = -1;
         do {
-            System.out.println("        "+question);
+            System.out.println(question);
+            System.out.println("------------------------------------");
             for(int i =1 ; i <= listeChoix.size(); i++){
-                System.out.println("        "+i + " - "+ listeChoix.get(i-1));
+                System.out.println(i + " - "+ listeChoix.get(i-1));
             }
-
+            System.out.println("------------------------------------");
             var in = this.scanner.nextLine();
 
-            System.out.println("redirection vers "+in);
             try{
                 reponse = Integer.parseInt(in);
             }catch (NumberFormatException ex){
@@ -144,17 +144,21 @@ public class VueModeTerminal {
 
         this.titre("valider votre carte");
 
-        var in = this.input("Votre numero de carte : ");
+        var in = this.input("Votre numero de carte ( 0 = retour) : ");
 
         Matcher matcher = Pattern.compile("[0-9A-F]{24}", Pattern.CASE_INSENSITIVE) // hexa de 24 char
                 .matcher(in);
-        if (!matcher.find()){
+        if (!matcher.find() && !in.equals("0")){
 
             this.erreur("La carte est invalide");
-            this.inputValiderCarte();
+            in = this.inputValiderCarte();
         }
 
         return in;
+
+
+
+
     }
 
 
@@ -162,8 +166,8 @@ public class VueModeTerminal {
 
         this.titre("Acheter des tickets");
         return this.checkboxes("Faites un choix : ",List.of(
-                "Acheter ticket 1 voyage "+prix1Voyage+"€",
-                "Acheter ticket 10 voyages "+prix10Voyages+"€",
+                "Acheter ticket 1 voyage à " +prix1Voyage+"€",
+                "Acheter ticket 10 voyages à "+prix10Voyages+"€",
                 "Retour"
 
         ));
@@ -177,7 +181,7 @@ public class VueModeTerminal {
     }
 
     public void inputEnter() {
-        System.out.println("<Entrer> pour continuer...");
+        System.out.println("Appuyer sur <Entrer> pour continuer...");
         this.scanner.nextLine();
 
     }
@@ -186,8 +190,8 @@ public class VueModeTerminal {
 
         this.titre("Souscrire à un abonnement");
         return this.checkboxes("Faites un choix : ",List.of(
-                "1 Mois "+prix1Mois+"€",
-                "1 Année "+prix1An+"€",
+                "S'abonner pendant 1 Mois à"+prix1Mois+"€",
+                "S'abonner pendant 1 Année à"+prix1An+"€",
                 "Retour"
 
         ));

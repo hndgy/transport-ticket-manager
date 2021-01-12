@@ -73,8 +73,15 @@ public class Controlleur {
         try {
             long id = this.facade.inscrire(new UserInscriptionDTO(nom, prenom, mail, mdp));
             if (id != -1) {
-                this.vue.info("Vous êtes inscrit");
-                this.connexion();
+                this.vue.info("Bienvenue "+prenom+", vous êtes inscrit !");
+                this.idConnected = this.facade.connecter(new UserConnexionDTO(mail, mdp));
+                var idCarte = this.facade.getIdCarteByIdTitu(idConnected).toHexString();
+                this.vue.info("Voici votre nouvelle carte : "+ idCarte);
+                this.vue.info("Vous pouvez dès maintenant acheter un ticket ou souscrire à un abonnement");
+                this.vue.inputEnter();
+                this.vue.info("Redirection vers votre espace...");
+                this.menuEspaceClient();
+
             } else {
                 this.inscription();
             }
@@ -170,23 +177,28 @@ public class Controlleur {
 
         String rep = this.vue.inputValiderCarte();
 
-        boolean isValide = facade.validerTitre(rep);
-        if (isValide){
-            int nbVoyage = facade.getNbVoyageByIdCarte(rep);
-            LocalDate finabo = facade.getFinAbonnement(rep);
-            LocalDateTime today  = LocalDateTime.now();
-            this.vue.info("Votre titre est valide vous pouvez passer ["+ today.getHour() +":"+today.getMinute() +"]");
-            if(finabo != null){
-                this.vue.info("         Fin Abonnement : "+ VueModeTerminal.dateToString(finabo)) ;
-            }else{
-                this.vue.info("         Voyages restants : "+nbVoyage);
+        if(rep.equals("0")){
+            this.accueil();
+        }else{
+            boolean isValide = facade.validerTitre(rep);
+            if (isValide){
+                int nbVoyage = facade.getNbVoyageByIdCarte(rep);
+                LocalDate finabo = facade.getFinAbonnement(rep);
+                LocalDateTime today  = LocalDateTime.now();
+                this.vue.info("Votre titre est valide vous pouvez passer ["+ today.getHour() +":"+today.getMinute() +"]");
+                if(finabo != null){
+                    this.vue.info("         Fin Abonnement : "+ VueModeTerminal.dateToString(finabo)) ;
+                }else{
+                    this.vue.info("         Voyages restants : "+nbVoyage);
+                }
+
+                this.vue.inputEnter();
+                this.accueil();
+            }else {
+                this.vue.erreur("Votre titre n'a pas de voyage disponible");
+                this.validerCarte();
             }
 
-            this.vue.inputEnter();
-            this.accueil();
-        }else {
-            this.vue.erreur("Votre titre n'a pas de voyage disponible");
-            this.validerCarte();
         }
 
 
