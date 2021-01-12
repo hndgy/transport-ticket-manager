@@ -258,6 +258,11 @@ public class MySQLBddConnection {
     }
 
 
+    /**
+     * Fixe un prix pour un produit en particulier
+     * @param produit
+     * @param prix
+     */
     public void setTarif(String produit, float prix){
         try{
 
@@ -300,7 +305,7 @@ public class MySQLBddConnection {
             Statement statement = this.connection.createStatement();
             String sqlQuery =
                     "INSERT INTO abonnement VALUES"+ "(null,DATE(NOW()),DATE_ADD(DATE(NOW()), INTERVAL 1 MONTH), "+
-                            getTarif("abonnement_mensuel")+","
+                            getIdTarif("abonnement_mensuel")+","
                             +userID
                             +")";
             statement.execute(sqlQuery);
@@ -314,14 +319,14 @@ public class MySQLBddConnection {
     /**
      * Ajoute un abonnement annuel pour un utilisateur
      * @param userID
-     * @return true si l'ajout de l'abonnement à bien été effectuer
+     * @return true si l'ajout de l'abonnement à bien été effectué
      */
     public boolean abonnementAnnuel(long userID){
         try {
             Statement statement = this.connection.createStatement();
             String sqlQuery =
                     "INSERT INTO abonnement VALUES"+ "(null,DATE(NOW()),DATE_ADD(DATE(NOW()), INTERVAL 1 YEAR), "+
-                            getTarif("abonnement_annuel")+","
+                            getIdTarif("abonnement_annuel")+","
                             +userID
                             +")";
             statement.execute(sqlQuery);
@@ -336,7 +341,7 @@ public class MySQLBddConnection {
     /**
      * Ajoute un ticket à l'unité pour un utilisateur
      * @param userID
-     * @return true si l'ajout à bien été effectuer
+     * @return true si l'ajout à bien été effectué
      */
     public boolean insertTicket1Voyage(long userID){
         try {
@@ -360,7 +365,7 @@ public class MySQLBddConnection {
     /**
      * Ajoute un carnet de 10 tickets pour un utilisateur
      * @param userID
-     * @return true si l'ajout à bien été effectuer
+     * @return true si l'ajout à bien été effectué
      */
     public boolean insertTicket10Voyages(long userID){
         try {
