@@ -25,7 +25,6 @@ import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
 public class MongoDbConnection {
 
-
     private static final String DB_NAME = "transportDB";
     private static final String COL_CARTES = "cartes";
     private static final String USER_DB = "admin";
@@ -33,11 +32,9 @@ public class MongoDbConnection {
     private static final String PASSWORD = "root";
     private static final String HOST = "localhost";
 
-
     private MongoDatabase db;
     private MongoCollection<Carte> cartes;
     private static MongoDbConnection instance;
-
 
     public MongoDbConnection() {
         ConnectionString connectionString = new ConnectionString("mongodb://" + USER + ":" + PASSWORD + "@" + HOST + ":27017/");
@@ -75,10 +72,20 @@ public class MongoDbConnection {
      * Méthode qui permet de récuperer une carte de transport en passant en paramètre l'id du titulaire de la carte
      *
      * @param idTitulaire long qui correspond à l'id du titulaire de la carte de transport
-     * @return une Carte (voir pojos) qui correspond a la carte de transport demandée
+     * @return une Carte (voir pojos) qui correspond à la carte de transport demandée
      */
     public Carte getCarteById(long idTitulaire) {
         return this.cartes.find(new Document("id_titulaire", idTitulaire)).first();
+    }
+
+    /**
+     * Méthode qui permet de récuperer l'id d'une carte de transport en passant en paramètre l'id du titulaire de la carte
+     *
+     * @param idTitulaire long qui correspond à l'id du titulaire de la carte de transport
+     * @return un ObjectId qui correspond à l'id de la carte de transport demandée
+     */
+    public ObjectId getIdCarteByIdTitu(long idTitulaire) {
+        return Objects.requireNonNull(this.cartes.find(new Document("id_titulaire", idTitulaire)).first()).getId();
     }
 
     /**
@@ -107,6 +114,16 @@ public class MongoDbConnection {
             return (Objects.requireNonNull(this.cartes.find(new Document("_id", new ObjectId(idCarte))).first())).setDateFinAbonnement(LocalDate.now()).getDateFinAbonnement();
         }
         return Objects.requireNonNull(this.cartes.find(new Document("_id", new ObjectId(idCarte))).first()).getDateFinAbonnement();
+    }
+
+    /**
+     * Méthode qui permet de récupérer la date de fin d'abonnement d'une carte avec l'id du titulaire
+     *
+     * @param idTitu long qui correspond à l'id du titulaire de la carte
+     * @return un LocalDate qui correspond à la date de la fin de l'abonnement
+     */
+    public LocalDate getFinAboByTitu(long idTitu) {
+        return this.cartes.find(new Document("id_titulaire", idTitu)).first().getDateFinAbonnement();
     }
 
     /**
@@ -284,8 +301,4 @@ public class MongoDbConnection {
         */
     }
 
-    public LocalDate getFinAboByTitu(long idTitu) {
-        return this.cartes.find(new Document("id_titulaire", idTitu)).first().getDateFinAbonnement();
-
-    }
 }

@@ -5,6 +5,7 @@ import application.model.bdd.pojos.Carte;
 import application.model.models.carteDeTransport.produits.ticket.ITicket;
 import application.model.models.exceptions.MailDejaUtiliseException;
 import application.model.models.exceptions.NbTitreNonValide;
+import org.bson.types.ObjectId;
 
 import java.time.LocalDate;
 import java.util.Collection;
@@ -34,7 +35,7 @@ public interface IFacade {
 
     boolean isConnected(long idUser);
 
-    Carte getCarteByIdTitu(long idTitu);
+    ObjectId getIdCarteByIdTitu(long idTitu);
 
     int getNbVoyage(long idTitu);
 

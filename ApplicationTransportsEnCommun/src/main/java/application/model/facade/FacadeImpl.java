@@ -8,6 +8,7 @@ import application.model.models.carteDeTransport.produits.ticket.ITicket;
 import application.model.models.exceptions.MailDejaUtiliseException;
 import application.model.models.exceptions.NbTitreNonValide;
 import application.model.models.utilisateur.IUtilisateur;
+import org.bson.types.ObjectId;
 
 import java.time.LocalDate;
 import java.util.Collection;
@@ -120,8 +121,8 @@ public class FacadeImpl implements IFacade {
     }
 
     @Override
-    public Carte getCarteByIdTitu(long idTitu) {
-        return mongoDbConnection.getCarteById(idTitu);
+    public ObjectId getIdCarteByIdTitu(long idTitu) {
+        return mongoDbConnection.getIdCarteByIdTitu(idTitu);
     }
 
     @Override
