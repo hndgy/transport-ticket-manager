@@ -41,7 +41,7 @@ public class FacadeImpl implements IFacade {
     /**
      * Inscription d'un utilisateur dans la bdd MySql et création de sa carte dans la bdd Mongo
      * @param userInscriptionDTO
-     * @return
+     * @return l'id du nouvel utilisateur
      * @throws MailDejaUtiliseException
      */
     @Override
@@ -58,7 +58,7 @@ public class FacadeImpl implements IFacade {
     /**
      * Désinscrit l'utilisateur de la bdd MySql et supprime sa carte dans Mongo
      * @param userDesinscriptionDTO
-     * @return
+     * @return true si l'utilisateur est bien désinscrit sinon false
      */
     @Override
     public boolean desinscrire(UserDesinscriptionDTO userDesinscriptionDTO) {
@@ -74,7 +74,7 @@ public class FacadeImpl implements IFacade {
     /**
      * Connecte un utilisateur et l'ajoute dans la hashmap
      * @param userConnexionDTO
-     * @return
+     * @return l'id de l'utilisateur connecté
      */
     @Override
     public long connecter(UserConnexionDTO userConnexionDTO) {
@@ -90,7 +90,7 @@ public class FacadeImpl implements IFacade {
     /**
      * Déconnecte l'utilisateur et le retire de la hashmap
      * @param idUser
-     * @return
+     * @return true si l'utilisateur est bien déconnecté
      */
     @Override
     public boolean deconnecter(long idUser) {
@@ -102,7 +102,7 @@ public class FacadeImpl implements IFacade {
      * Permet à l'utilisateur de souscrire à un abonnement mensuel ou annuel et ajoute l'abonnement correspondant sur sa carte
      * via la bdd Mongo
      * @param souscriptionDTO
-     * @return
+     * @return true si l'abonnement à bien été souscrit
      */
     @Override
     public boolean souscrireUnAbonnement(SouscriptionDTO souscriptionDTO) {
@@ -141,9 +141,9 @@ public class FacadeImpl implements IFacade {
     }
 
     /**
-     * Valide ou non la carte de l'utilisateur sous réserve d'un nombre suffisant de voyage ou d'un abonnement valide, via la bdd Mongo
+     * Valide ou non la carte de l'utilisateur sous réserve d'un nombre suffisant de voyage ou d'un abonnement valide
      * @param idCarte
-     * @return
+     * @return true si la carte est valide pour embarquer
      */
     @Override
     public boolean validerTitre(String idCarte) {
@@ -153,9 +153,8 @@ public class FacadeImpl implements IFacade {
 
 
     /**
-     * Récupère le nombre de ticket valide d'un utilisateur via la bdd MySql
      * @param idUser
-     * @return
+     * @return la liste des tickets posséder par un utilisateur
      */
     @Override
     public List<ITicket> getTickets(long idUser){
@@ -163,9 +162,9 @@ public class FacadeImpl implements IFacade {
     }
 
     /**
-     * Retourne si l'utilisateur est connecté ou non
+     * Check si l'utilisateur est inclus dans la hashmap
      * @param idUser
-     * @return
+     * @return true si l'utilisateur est connecté
      */
     @Override
     public boolean isConnected(long idUser) {
@@ -173,9 +172,8 @@ public class FacadeImpl implements IFacade {
     }
 
     /**
-     * Récupère l'id de la carte d'un utilisateur via son identifiant
      * @param idTitu
-     * @return
+     * @return l'id de la carte d'un utilisateur via son identifiant
      */
     @Override
     public ObjectId getIdCarteByIdTitu(long idTitu) {
@@ -183,9 +181,8 @@ public class FacadeImpl implements IFacade {
     }
 
     /**
-     * Récupère le nombre de voyage disponible d'un utilisateur
      * @param idTitu
-     * @return
+     * @return le nombre de voyage disponible d'un utilisateur
      */
     @Override
     public int getNbVoyage(long idTitu) {
@@ -193,9 +190,8 @@ public class FacadeImpl implements IFacade {
     }
 
     /**
-     * Récupère la date de fin d'abonnement de la carte d'un utilisateur
      * @param idTitu
-     * @return
+     * @return la date de fin d'abonnement de la carte d'un utilisateur
      */
     @Override
     public LocalDate getFinAbonnement(long idTitu) {

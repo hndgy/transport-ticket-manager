@@ -56,7 +56,7 @@ public class MySQLBddConnection {
      * @param prenom
      * @param mail
      * @param mdp
-     * @return le dernier user créer dans la base
+     * @return le dernier user crée dans la bdd
      */
     public long createUser(String nom, String prenom, String mail, String mdp){
 
@@ -92,7 +92,7 @@ public class MySQLBddConnection {
 
     /**
      *
-     * @return Tous les utilisateurs de la bases
+     * @return Tous les utilisateurs de la bdd
      */
     public List<IUtilisateur> getAllUser(){
         List<IUtilisateur> res = new ArrayList<>();
@@ -127,7 +127,7 @@ public class MySQLBddConnection {
     /**
      * Verifie si un mail est déjà utilisé par un utilisateur ou non
      * @param mail
-     * @return false si il exite pas true sinon
+     * @return false si il n'exite pas, true sinon
      */
     public boolean checkMail(String mail){
         try{
@@ -154,7 +154,7 @@ public class MySQLBddConnection {
      * Recupere un utilisateur via son mail et son mdp
      * @param mail
      * @param mdp
-     * @return
+     * @return l'utilisateur
      */
     public IUtilisateur getUserByMailAndMdp(String mail, String mdp){
 
@@ -185,7 +185,7 @@ public class MySQLBddConnection {
      * Supprime un utilisateur de la bdd grâce à son mail et son mot de passe
      * @param mail
      * @param mdp
-     * @return
+     * @return true si l'utilisateur à bien été supprimé
      */
     public boolean deleteUser(String mail, String mdp){
 
@@ -204,9 +204,8 @@ public class MySQLBddConnection {
     }
 
     /**
-     * Récupère le tarif d'un produit en particulier
      * @param produit
-     * @return
+     * @return le tarif d'un produit en particulier
      */
     /*
     Les produits :
@@ -237,7 +236,7 @@ public class MySQLBddConnection {
     /**
      *
      * @param produit
-     * @return
+     * @return l'id tarif d'un produit
      */
     public int getIdTarif(String produit){
         try{
@@ -294,7 +293,7 @@ public class MySQLBddConnection {
     /**
      * Ajoute un abonnement mensuel pour un utilisateur
      * @param userID
-     * @return
+     * @return true si l'ajout de l'abonnement à bien été effectuer
      */
     public boolean abonnementMensuel(long userID){
         try {
@@ -315,7 +314,7 @@ public class MySQLBddConnection {
     /**
      * Ajoute un abonnement annuel pour un utilisateur
      * @param userID
-     * @return
+     * @return true si l'ajout de l'abonnement à bien été effectuer
      */
     public boolean abonnementAnnuel(long userID){
         try {
@@ -337,7 +336,7 @@ public class MySQLBddConnection {
     /**
      * Ajoute un ticket à l'unité pour un utilisateur
      * @param userID
-     * @return
+     * @return true si l'ajout à bien été effectuer
      */
     public boolean insertTicket1Voyage(long userID){
         try {
@@ -361,7 +360,7 @@ public class MySQLBddConnection {
     /**
      * Ajoute un carnet de 10 tickets pour un utilisateur
      * @param userID
-     * @return
+     * @return true si l'ajout à bien été effectuer
      */
     public boolean insertTicket10Voyages(long userID){
         try {
@@ -382,9 +381,8 @@ public class MySQLBddConnection {
     }
 
     /**
-     * Récupère les tickets disponible pour un utilisateur dans une liste de type ITicket
      * @param userID
-     * @return
+     * @return les tickets disponibles pour un utilisateur dans une liste
      */
     public List<ITicket> getTicket_byUser(long userID) {
         List<ITicket> ticketList = new ArrayList<>();
