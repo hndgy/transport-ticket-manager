@@ -1,14 +1,13 @@
 package application.controlleur;
 
-import application.model.DTO.UserConnexionDTO;
-import application.model.DTO.UserDesinscriptionDTO;
-import application.model.DTO.UserInscriptionDTO;
+import application.model.DTO.*;
 import application.model.facade.IFacade;
 import application.model.models.exceptions.MailDejaUtiliseException;
 import application.vue.VueModeTerminal;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class Controlleur {
     private IFacade facade;
@@ -37,6 +36,8 @@ public class Controlleur {
             this.inscription();
         } else if (reponse == 4){
             this.vue.fermer();
+        }else{
+            accueil();
         }
     }
 
@@ -102,7 +103,7 @@ public class Controlleur {
             this.idConnected = -1;
             this.vue.info("Vous avez été déconnecté");
             this.accueil();
-        }
+        }else this.menuEspaceClient();
 
     }
     public void desinscription(){
@@ -120,22 +121,56 @@ public class Controlleur {
         }
     }
     public void souscriptionAbonnment(){
+        var reponse = this.vue.pageSouscription(this.facade.getPrix1Mois(),this.facade.getPrix1An());
+        if (reponse == 1){
 
+            this.facade.souscrireAbonnement1Mois(idConnected);
+            this.confirmationSouscription();
+        }else if(reponse == 2){
+            this.facade.souscrireAbonnement1An(idConnected);
+            this.confirmationSouscription();
+        }else if(reponse == 3){
+            this.menuEspaceClient();
+        } else {
+            this.souscriptionAbonnment();
+        }
     }
 
     public void achatTicket(){
+        var reponse = this.vue.pageAchatTicket(this.facade.getPrix1Voyage(),this.facade.getPrix10Voyages());
+        if (reponse == 1){
+
+            this.facade.commmander1Voyage(idConnected);
+            this.confirmationCommande();
+        }else if(reponse == 2){
+            this.facade.commmander10Voyages(idConnected);
+            this.confirmationCommande();
+        }else if(reponse == 3){
+            this.menuEspaceClient();
+        }else {
+            this.achatTicket();
+        }
+
 
     }
 
     public void confirmationCommande(){
+        this.vue.info("Vous avez maintenant: "+ this.facade.getNbVoyage(idConnected) + " voyages");
+        this.vue.inputEnter();
+        this.achatTicket();
+    }
 
+    public void confirmationSouscription(){
+        this.vue.pageListeAbonnement(this.facade.getAbonnements(idConnected));
+        this.vue.inputEnter();
+        this.souscriptionAbonnment();
     }
 
     public void validerCarte(){
 
         String rep = this.vue.inputValiderCarte();
 
-        if (!rep.equals("") || rep.length() != 24){
+        if (!rep.equals("") || rep.length() != 24){ // 24 = tailles des _id en base
             boolean isValide = facade.validerTitre(rep);
             if (isValide){
                 int nbVoyage = facade.getNbVoyage(this.idConnected);
@@ -157,6 +192,8 @@ public class Controlleur {
             this.validerCarte();
         }
     }
+
+
     public void historiqueAchat(){
 
     }

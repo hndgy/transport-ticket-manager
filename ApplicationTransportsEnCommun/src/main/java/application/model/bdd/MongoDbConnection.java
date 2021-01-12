@@ -139,6 +139,17 @@ public class MongoDbConnection {
                         new Document("nb_voyages", nbVoyagePlusMoins)));
     }
 
+
+    public void add10Voyages(long idUser){
+        this.updateNbVoyage(idUser,1);
+    }
+
+    public void add1Voyage(long idUser){
+        this.updateNbVoyage(idUser, 10);
+    }
+
+
+
     /**
      * Méthode qui met à jour la date de fin d'abonnement d'une carte de transport pour un utilisateur passé en paramètre
      * en rajoutant le nombre de mois (abonnement mensuel pour chaque mois ou annuel si 12 mois demandé) demandé par l'utilisateur que l'on a passé en paramètre
@@ -156,6 +167,12 @@ public class MongoDbConnection {
         );
     }
 
+    public void add1MoisAbonnement(long idUser) {
+        updateAbonnement(idUser, 1);
+    }
+    public void add1AnAbonnement(long idUser) {
+        updateAbonnement(idUser, 12);
+    }
     /**
      * Méthode qui permet d'insérer dans la bdd mongo une carte de transport passée en paramètre
      *
@@ -300,5 +317,6 @@ public class MongoDbConnection {
         System.out.println(c.isValide(11));
         */
     }
+
 
 }

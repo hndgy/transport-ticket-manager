@@ -28,7 +28,12 @@ public interface IFacade {
 
     boolean souscrireUnAbonnement(SouscriptionDTO souscriptionDTO);
 
-    void commanderTitre(CommandeTitreDTO commandeTitreDTO) throws NbTitreNonValide;
+    void souscrireAbonnement1Mois(long idUser);
+    void souscrireAbonnement1An(long idUser);
+
+    void commmander1Voyage(long idUser);
+    void commmander10Voyages(long idUser);
+
 
     boolean validerTitre(String idCarte);
 
@@ -50,4 +55,9 @@ public interface IFacade {
     void setPrixTicket1Voyage(float prix);
     void setPrixTicket10Voyages(float prix);
 
+    float getPrix10Voyages();
+
+    float getPrix1Voyage();
+    float getPrix1Mois();
+    float getPrix1An();
 }

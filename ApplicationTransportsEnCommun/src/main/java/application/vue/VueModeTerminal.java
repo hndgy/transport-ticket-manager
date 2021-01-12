@@ -1,6 +1,9 @@
 package application.vue;
 
+import application.model.models.carteDeTransport.produits.abonnement.IAbonnement;
+
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.Scanner;
 
@@ -71,9 +74,9 @@ public class VueModeTerminal {
     private int checkboxes(String question, List<String> listeChoix){
         int reponse = -1;
         do {
-            System.out.println(question);
+            System.out.println("        "+question);
             for(int i =1 ; i <= listeChoix.size(); i++){
-                System.out.println(i + " - "+ listeChoix.get(i-1));
+                System.out.println("        "+i + " - "+ listeChoix.get(i-1));
             }
 
             var in = this.scanner.nextLine();
@@ -124,10 +127,58 @@ public class VueModeTerminal {
         return this.input("Votre numero de carte : ");
     }
 
+
+    public int pageAchatTicket(float prix1Voyage, float prix10Voyages) {
+
+        this.titre("Acheter des tickets");
+        return this.checkboxes("Faites un choix : ",List.of(
+                "Acheter ticket 1 voyage "+prix1Voyage+"€",
+                "Acheter ticket 10 voyages "+prix10Voyages+"€",
+                "Retour"
+
+        ));
+    }
+
     public void fermer() {
 
         this.titre("Au revoir et à bientôt !");
         this.pageIntroduction();
         System.exit(0); // 0 = code pour quitter l'app sans erreurs
+    }
+
+    public void inputEnter() {
+        this.input("<Entrer> pour continuer");
+    }
+
+    public int pageSouscription( float prix1Mois, float prix1An ) {
+
+        this.titre("Souscrire à un abonnement");
+        return this.checkboxes("Faites un choix : ",List.of(
+                "1 Mois "+prix1Mois+"€",
+                "1 Année "+prix1An+"€",
+                "Retour"
+
+        ));
+    }
+
+    public void pageListeAbonnement(List<IAbonnement> abonnements) {
+        System.out.println("ID       DEBUT          FIN   ");
+        System.out.println("------------------------------");
+        abonnements.forEach(
+                a -> {
+                    System.out.println( a.getId()+"     "+ dateToString(a.getDateDebut())+"   "+dateToString(a.getDateFin()));
+                }
+        );
+        System.out.println("------------------------------");
+
+    }
+
+    /**
+     * LocalDate -> "dd/mm/yyyy"
+     * @param date
+     * @return
+     */
+    private String dateToString(LocalDate date){
+        return date.getDayOfMonth() + "/"+date.getMonth()+"/"+date.getYear();
     }
 }

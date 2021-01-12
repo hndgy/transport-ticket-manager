@@ -235,6 +235,18 @@ public class MySQLBddConnection {
         return .0f;
     }
 
+    public float getPrix1Voyage() {
+        return getTarif("ticket_1_voyage");
+    }
+    public float getPrix10Voyages() {
+        return getTarif("ticket_10_voyages");
+    }
+    public float getPrix1MoisAbo() {
+        return getTarif("abonnement_mensuel");
+    }
+    public float getPrix1AnAbo() {
+        return getTarif("abonnement_annuel");
+    }
     /**
      *
      * @param produit
@@ -378,7 +390,6 @@ public class MySQLBddConnection {
                             getIdTarif("ticket_10_voyages")+","
                             +10+","
                             +userID+")";
-            System.out.println(sqlQuery);
             statement.execute(sqlQuery);
             return true;
         } catch (SQLException throwables) {
@@ -465,4 +476,7 @@ public class MySQLBddConnection {
         }
         return abonnementsList;
     }
+
+
+
 }

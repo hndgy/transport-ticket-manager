@@ -99,7 +99,7 @@ public class FacadeImpl implements IFacade {
         return true;
     }
 
-    /**
+    /** DEPRECATED
      * Permet à l'utilisateur de souscrire à un abonnement mensuel ou annuel et ajoute l'abonnement correspondant sur sa carte
      * via la bdd Mongo
      * @param souscriptionDTO
@@ -121,25 +121,33 @@ public class FacadeImpl implements IFacade {
         return false;
     }
 
-    /**
-     * Permet de commander soit un ticket à l'unité ou un carnet de 10 tickets et l'incrémente sur la carte de l'utilisateur
-     * @param commandeTitreDTO
-     * @throws NbTitreNonValide
-     */
     @Override
-    public void commanderTitre(CommandeTitreDTO commandeTitreDTO) throws NbTitreNonValide {
-        switch (commandeTitreDTO.getNbTitre()){
-            case 1 :
-                mySQLBddConnection.insertTicket1Voyage(commandeTitreDTO.getIdUser());
-                break;
-            case 10 :
-                mySQLBddConnection.insertTicket10Voyages(commandeTitreDTO.getIdUser());
-                break;
-            default:
-                throw new NbTitreNonValide();
-        }
-         mongoDbConnection.updateNbVoyage(commandeTitreDTO.getIdUser(), commandeTitreDTO.getNbTitre());
+    public void souscrireAbonnement1Mois(long idUser) {
+        mySQLBddConnection.abonnementMensuel(idUser);
+        mongoDbConnection.add1MoisAbonnement(idUser);
+
     }
+
+    @Override
+    public void souscrireAbonnement1An(long idUser) {
+        mySQLBddConnection.abonnementAnnuel(idUser);
+        mongoDbConnection.add1AnAbonnement(idUser);
+    }
+
+    @Override
+    public void commmander1Voyage(long idUser) {
+        mySQLBddConnection.insertTicket1Voyage(idUser);
+        mongoDbConnection.add1Voyage(idUser);
+
+    }
+
+    @Override
+    public void commmander10Voyages(long idUser) {
+        mySQLBddConnection.insertTicket10Voyages(idUser);
+        mongoDbConnection.add10Voyages(idUser);
+
+    }
+
 
     /**
      * Valide ou non la carte de l'utilisateur sous réserve d'un nombre suffisant de voyage ou d'un abonnement valide
@@ -222,6 +230,26 @@ public class FacadeImpl implements IFacade {
     @Override
     public void setPrixTicket10Voyages(float prix) {
         mySQLBddConnection.setPrixTicket10Voyages(prix);
+    }
+
+    @Override
+    public float getPrix10Voyages() {
+        return mySQLBddConnection.getPrix1Voyage();
+    }
+
+    @Override
+    public float getPrix1Voyage() {
+        return mySQLBddConnection.getPrix10Voyages();
+    }
+
+    @Override
+    public float getPrix1Mois() {
+        return mySQLBddConnection.getPrix1MoisAbo();
+    }
+
+    @Override
+    public float getPrix1An() {
+        return mySQLBddConnection.getPrix1AnAbo();
     }
 
 
