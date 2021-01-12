@@ -3,16 +3,13 @@ package application.model.facade;
 import application.model.DTO.*;
 import application.model.bdd.MongoDbConnection;
 import application.model.bdd.MySQLBddConnection;
-import application.model.bdd.pojos.Carte;
 import application.model.models.carteDeTransport.produits.abonnement.IAbonnement;
 import application.model.models.carteDeTransport.produits.ticket.ITicket;
 import application.model.models.exceptions.MailDejaUtiliseException;
-import application.model.models.exceptions.NbTitreNonValide;
 import application.model.models.utilisateur.IUtilisateur;
 import org.bson.types.ObjectId;
 
 import java.time.LocalDate;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -239,12 +236,12 @@ public class FacadeImpl implements IFacade {
 
     @Override
     public float getPrix10Voyages() {
-        return mySQLBddConnection.getPrix1Voyage();
+        return mySQLBddConnection.getPrix10Voyages();
     }
 
     @Override
     public float getPrix1Voyage() {
-        return mySQLBddConnection.getPrix10Voyages();
+        return mySQLBddConnection.getPrix1Voyage();
     }
 
     @Override
@@ -255,6 +252,11 @@ public class FacadeImpl implements IFacade {
     @Override
     public float getPrix1An() {
         return mySQLBddConnection.getPrix1AnAbo();
+    }
+
+    @Override
+    public IUtilisateur getUser(long idUser) {
+        return this.connectedUsers.get(idUser);
     }
 
 

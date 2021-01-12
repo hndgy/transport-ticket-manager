@@ -3,6 +3,7 @@ package application.controlleur;
 import application.model.DTO.*;
 import application.model.facade.IFacade;
 import application.model.models.exceptions.MailDejaUtiliseException;
+import application.model.models.utilisateur.IUtilisateur;
 import application.vue.VueModeTerminal;
 
 import java.time.LocalDate;
@@ -68,30 +69,29 @@ public class Controlleur {
         String mail = this.vue.inputMail();
         String mdp = this.vue.inputMdp();
 
-        if (mail.equals("") || mdp.equals("") || nom.equals("") || prenom.equals("")) {
-            this.vue.erreur("Veuillez bien remplir les champs");
-            inscription();
-        } else {
-            try {
-                long id = this.facade.inscrire(new UserInscriptionDTO(nom, prenom, mail, mdp));
-                if (id != -1) {
-                    this.vue.info("Vous êtes inscrit");
-                    this.connexion();
-                } else {
-                    this.inscription();
-                }
-            } catch (MailDejaUtiliseException e) {
-                this.vue.erreur(mail + " est déjà utilisé");
+
+        try {
+            long id = this.facade.inscrire(new UserInscriptionDTO(nom, prenom, mail, mdp));
+            if (id != -1) {
+                this.vue.info("Vous êtes inscrit");
+                this.connexion();
+            } else {
+                this.inscription();
             }
-
-
+        } catch (MailDejaUtiliseException e) {
+            this.vue.erreur(mail + " est déjà utilisé. Veuillez recommencer");
+            this.inscription();
         }
+
+
+
 
     }
 
     public void menuEspaceClient(){
+        IUtilisateur userConnected = this.facade.getUser(idConnected);
 
-        var reponse = this.vue.pageMenu();
+        var reponse = this.vue.pageMenu(userConnected.getPrenom(), userConnected.getNom());
 
         if (reponse == 1){
             this.achatTicket();
@@ -170,27 +170,26 @@ public class Controlleur {
 
         String rep = this.vue.inputValiderCarte();
 
-        if (!rep.equals("") || rep.length() != 24){ // 24 = tailles des _id en base
-            boolean isValide = facade.validerTitre(rep);
-            if (isValide){
-                int nbVoyage = facade.getNbVoyage(this.idConnected);
-                LocalDate finabo = facade.getFinAbonnement(idConnected);
-                this.vue.info("Votre titre est valide vous pouvez passer ["+ LocalDateTime.now() +"]");
-                if(finabo != null){
-                    this.vue.info("         Fin Abonnement : "+ finabo.getDayOfMonth()+"/"+finabo.getMonth()+"/"+finabo.getYear());
-                }else{
-                    this.vue.info("         Voyages restants : "+nbVoyage);
-                }
-
-                this.accueil();
-
-            }else {
-                this.vue.erreur("Votre titre n'est pas valide");
-                this.validerCarte();
+        boolean isValide = facade.validerTitre(rep);
+        if (isValide){
+            int nbVoyage = facade.getNbVoyageByIdCarte(rep);
+            LocalDate finabo = facade.getFinAbonnement(rep);
+            LocalDateTime today  = LocalDateTime.now();
+            this.vue.info("Votre titre est valide vous pouvez passer ["+ today.getHour() +":"+today.getMinute() +"]");
+            if(finabo != null){
+                this.vue.info("         Fin Abonnement : "+ VueModeTerminal.dateToString(finabo)) ;
+            }else{
+                this.vue.info("         Voyages restants : "+nbVoyage);
             }
+
+            this.vue.inputEnter();
+            this.accueil();
         }else {
+            this.vue.erreur("Votre titre n'a pas de voyage disponible");
             this.validerCarte();
         }
+
+
     }
 
 

@@ -145,11 +145,11 @@ public class MongoDbConnection {
 
 
     public void add10Voyages(long idUser){
-        this.updateNbVoyage(idUser,1);
+        this.updateNbVoyage(idUser,10);
     }
 
     public void add1Voyage(long idUser){
-        this.updateNbVoyage(idUser, 10);
+        this.updateNbVoyage(idUser, 1);
     }
 
 

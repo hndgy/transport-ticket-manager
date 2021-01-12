@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class VueModeTerminal {
 
@@ -43,7 +45,17 @@ public class VueModeTerminal {
     }
 
     public String inputMail(){
-        return this.input("Mail : ");
+        var in = this.input("Mail : ");
+        Matcher matcher = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE)
+                .matcher(in);
+         if (!matcher.find()){
+
+             this.erreur("Veuillez entrer un mail");
+             this.inputMail();
+         }
+
+        return in;
+
     }
     public String inputMdp(){
         return this.input("Mot de passe : ");
@@ -60,8 +72,8 @@ public class VueModeTerminal {
         System.out.println("################# "+  titre.toUpperCase() +" #################");
 
     }
-    public int pageMenu(){
-        this.titre("ESPACE CLIENT");
+    public int pageMenu(String nom, String prenom){
+        this.titre("ESPACE CLIENT : "+prenom + " "+nom);
         return this.checkboxes(" Faites un choix : ",
                 List.of(
                         "Acheter un ticket",
@@ -81,7 +93,7 @@ public class VueModeTerminal {
 
             var in = this.scanner.nextLine();
 
-            System.out.println(in);
+            System.out.println("redirection vers "+in);
             try{
                 reponse = Integer.parseInt(in);
             }catch (NumberFormatException ex){
@@ -95,7 +107,13 @@ public class VueModeTerminal {
 
     private String input(String question){
         System.out.println(question);
-        return this.scanner.nextLine();
+        var in =  this.scanner.nextLine();
+        if(in.equals("")){
+            this.erreur("Veuillez remplir correctement le champ");
+            this.input(question);
+        }
+        return in;
+
     }
 
     public void erreur(String message) {
@@ -123,8 +141,20 @@ public class VueModeTerminal {
     }
 
     public String inputValiderCarte() {
+
         this.titre("valider votre carte");
-        return this.input("Votre numero de carte : ");
+
+        var in = this.input("Votre numero de carte : ");
+
+        Matcher matcher = Pattern.compile("[0-9A-F]{24}", Pattern.CASE_INSENSITIVE) // hexa de 24 char
+                .matcher(in);
+        if (!matcher.find()){
+
+            this.erreur("La carte est invalide");
+            this.inputValiderCarte();
+        }
+
+        return in;
     }
 
 
@@ -147,7 +177,9 @@ public class VueModeTerminal {
     }
 
     public void inputEnter() {
-        this.input("<Entrer> pour continuer");
+        System.out.println("<Entrer> pour continuer...");
+        this.scanner.nextLine();
+
     }
 
     public int pageSouscription( float prix1Mois, float prix1An ) {
@@ -178,7 +210,7 @@ public class VueModeTerminal {
      * @param date
      * @return
      */
-    private String dateToString(LocalDate date){
-        return date.getDayOfMonth() + "/"+date.getMonth()+"/"+date.getYear();
+    public static String dateToString(LocalDate date){
+        return date.getDayOfMonth() + "/"+date.getMonthValue()+"/"+date.getYear();
     }
 }

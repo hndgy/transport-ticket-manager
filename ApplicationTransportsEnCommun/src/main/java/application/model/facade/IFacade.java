@@ -6,6 +6,7 @@ import application.model.models.carteDeTransport.produits.abonnement.IAbonnement
 import application.model.models.carteDeTransport.produits.ticket.ITicket;
 import application.model.models.exceptions.MailDejaUtiliseException;
 import application.model.models.exceptions.NbTitreNonValide;
+import application.model.models.utilisateur.IUtilisateur;
 import org.bson.types.ObjectId;
 
 import java.time.LocalDate;
@@ -62,4 +63,6 @@ public interface IFacade {
     float getPrix1Voyage();
     float getPrix1Mois();
     float getPrix1An();
+
+    IUtilisateur getUser(long idUser);
 }

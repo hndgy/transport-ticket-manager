@@ -367,7 +367,6 @@ public class MySQLBddConnection {
                             +1+","
                             +userID+")";
 
-            System.out.println(sqlQuery);
             statement.execute(sqlQuery);
             return true;
         } catch (SQLException throwables) {
