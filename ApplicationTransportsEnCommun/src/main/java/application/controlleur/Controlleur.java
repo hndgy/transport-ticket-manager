@@ -98,6 +98,10 @@ public class Controlleur {
             this.souscriptionAbonnment();
         }else if(reponse == 3){
             this.desinscription();
+        } else if(reponse == 4){
+            this.idConnected = -1;
+            this.vue.info("Vous avez été déconnecté");
+            this.accueil();
         }
 
     }
@@ -134,8 +138,15 @@ public class Controlleur {
         if (!rep.equals("") || rep.length() != 24){
             boolean isValide = facade.validerTitre(rep);
             if (isValide){
+                int nbVoyage = facade.getNbVoyage(this.idConnected);
+                LocalDate finabo = facade.getFinAbonnement(idConnected);
                 this.vue.info("Votre titre est valide vous pouvez passer ["+ LocalDateTime.now() +"]");
-                // Affficher aussi le nb de voyage restant
+                if(finabo != null){
+                    this.vue.info("         Fin Abonnement : "+ finabo.getDayOfMonth()+"/"+finabo.getMonth()+"/"+finabo.getYear());
+                }else{
+                    this.vue.info("         Voyages restants : "+nbVoyage);
+                }
+
                 this.accueil();
 
             }else {

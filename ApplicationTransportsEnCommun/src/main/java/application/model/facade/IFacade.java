@@ -6,6 +6,7 @@ import application.model.models.carteDeTransport.produits.ticket.ITicket;
 import application.model.models.exceptions.MailDejaUtiliseException;
 import application.model.models.exceptions.NbTitreNonValide;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 
@@ -36,6 +37,8 @@ public interface IFacade {
     Carte getCarteByIdTitu(long idTitu);
 
     int getNbVoyage(long idTitu);
+
+    LocalDate getFinAbonnement(long idTitu);
 
     //ADMIN
     void setPrixAbonnementMensuel(float prix);

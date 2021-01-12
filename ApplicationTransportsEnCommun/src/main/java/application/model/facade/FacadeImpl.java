@@ -9,6 +9,7 @@ import application.model.models.exceptions.MailDejaUtiliseException;
 import application.model.models.exceptions.NbTitreNonValide;
 import application.model.models.utilisateur.IUtilisateur;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -126,6 +127,11 @@ public class FacadeImpl implements IFacade {
     @Override
     public int getNbVoyage(long idTitu) {
         return mongoDbConnection.getNbVoyage(idTitu);
+    }
+
+    @Override
+    public LocalDate getFinAbonnement(long idTitu) {
+        return mongoDbConnection.getFinAboByTitu(idTitu);
     }
 
     @Override

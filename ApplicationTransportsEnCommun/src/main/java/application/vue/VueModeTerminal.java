@@ -63,7 +63,8 @@ public class VueModeTerminal {
                 List.of(
                         "Acheter un ticket",
                         "Souscrire un abonnement",
-                        "Se désinscrire"
+                        "Se désinscrire",
+                        "Se déconnecter"
                 ));
     }
 
@@ -106,7 +107,6 @@ public class VueModeTerminal {
     }
 
     public void clear(){
-        System.out.println(". . .");
         try {
             Thread.sleep(1500);
         } catch (InterruptedException e) {

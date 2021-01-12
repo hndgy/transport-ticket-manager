@@ -284,4 +284,8 @@ public class MongoDbConnection {
         */
     }
 
+    public LocalDate getFinAboByTitu(long idTitu) {
+        return this.cartes.find(new Document("id_titulaire", idTitu)).first().getDateFinAbonnement();
+
+    }
 }
