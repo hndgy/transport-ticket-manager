@@ -185,7 +185,9 @@ public class Controlleur {
     }
 
     public void confirmationSouscription(){
-        this.vue.pageListeAbonnement(this.facade.getAbonnements(idConnected));
+        //this.vue.pageListeAbonnement(this.facade.getAbonnements(idConnected));
+        this.vue.info("Votre abonnement prend fin le : " +
+                VueModeTerminal.dateToString(this.facade.getFinAbonnement(this.facade.getIdCarteByIdTitu(idConnected).toHexString())));
         this.vue.inputEnter();
         this.souscriptionAbonnment();
     }

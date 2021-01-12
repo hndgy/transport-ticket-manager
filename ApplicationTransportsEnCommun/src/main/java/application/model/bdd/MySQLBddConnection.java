@@ -327,9 +327,9 @@ public class MySQLBddConnection {
             Statement statement = this.connection.createStatement();
             IAbonnement lastAbonnement = getAbonnementByUser(userID)
                     .stream()
-                    .max(Comparator.comparing(IAbonnement::getDateFin)).get();
+                    .max(Comparator.comparing(IAbonnement::getDateFin)).orElse(null);
             String sqlQuery = "";
-            if (lastAbonnement.estValide()) {
+            if (lastAbonnement != null && lastAbonnement.estValide()) {
                 sqlQuery = "INSERT INTO " + ABONNEMENT_TABLE + " VALUES" + "(null,"+lastAbonnement.getDateFin().toString()+",DATE_ADD(DATE(NOW()), INTERVAL 1 MONTH), " +
                         getIdTarif(ABONNEMENT_MENSUEL) + ","
                         + userID
@@ -360,9 +360,9 @@ public class MySQLBddConnection {
             Statement statement = this.connection.createStatement();
             IAbonnement lastAbonnement = getAbonnementByUser(userID)
                     .stream()
-                    .max(Comparator.comparing(IAbonnement::getDateFin)).get();
+                    .max(Comparator.comparing(IAbonnement::getDateFin)).orElse(null);
             String sqlQuery = "";
-            if (lastAbonnement.estValide()) {
+            if ( lastAbonnement != null && lastAbonnement.estValide()) {
                 sqlQuery = "INSERT INTO " + ABONNEMENT_TABLE + " VALUES" + "(null,"+lastAbonnement.getDateFin().toString()+",DATE_ADD(DATE(NOW()), INTERVAL 1 YEAR), " +
                         getIdTarif(ABONNEMENT_ANNUEL) + ","
                         + userID
@@ -498,8 +498,10 @@ public class MySQLBddConnection {
                 switch (typeAbo) {
                     case ABONNEMENT_MENSUEL:
                         abonnementsList.add(IAbonnement.creerAbonnementMensuel(idAbo, LocalDate.now(), prixAbo));
+                        break;
                     case ABONNEMENT_ANNUEL:
                         abonnementsList.add(IAbonnement.creerAbonnementAnnuel(idAbo, LocalDate.now(), prixAbo));
+                        break;
                 }
             }
             return abonnementsList;
