@@ -4,51 +4,32 @@ import application.model.models.carteDeTransport.produits.abonnement.IAbonnement
 import application.model.models.carteDeTransport.produits.ticket.ITicket;
 import application.model.models.utilisateur.IUtilisateur;
 
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.PBEKeySpec;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.security.spec.KeySpec;
 import java.sql.*;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class MySQLBddConnection {
-
-    private Connection connection;
 
     // TABLES
     private static final String USER_TABLE = "`utilisateur`";
     private static final String TARIFS_TABLE = "`tarifs`";
     private static final String ABONNEMENT_TABLE = "`abonnement`";
     private static final String TICKET_TABLE = "`ticket`";
-
-
+    public static final String ABONNEMENT_MENSUEL = "abonnement_mensuel";
+    public static final String ABONNEMENT_ANNUEL = "abonnement_annuel";
     // CHAINE DE CONNEXION
     private static final String CONNECTION_STRING =
-            "jdbc:mysql://"+ConfigBdd.getConfig("mysql.host")
-            +"/"+ConfigBdd.getConfig("mysql.db")+
-                    "?user="+ConfigBdd.getConfig("mysql.user")+
-                    "&password="+ConfigBdd.getConfig("mysql.password");
-
+            "jdbc:mysql://" + ConfigBdd.getConfig("mysql.host")
+                    + "/" + ConfigBdd.getConfig("mysql.db") +
+                    "?user=" + ConfigBdd.getConfig("mysql.user") +
+                    "&password=" + ConfigBdd.getConfig("mysql.password");
     private static MySQLBddConnection instance;
+    private Connection connection;
 
-    private void handleSqlError(SQLException ex){
-        System.out.println("SQLException: " + ex.getMessage());
-        System.out.println("SQLState: " + ex.getSQLState());
-        System.out.println("VendorError: " + ex.getErrorCode());
-        ex.printStackTrace();
-    }
-
-    public static MySQLBddConnection getInstance(){
-        return instance == null ? new MySQLBddConnection() : instance;
-    }
-
-    public MySQLBddConnection(){
+    public MySQLBddConnection() {
 
         try {
             this.connection = DriverManager.getConnection(CONNECTION_STRING);
@@ -58,19 +39,30 @@ public class MySQLBddConnection {
         }
     }
 
+    public static MySQLBddConnection getInstance() {
+        return instance == null ? new MySQLBddConnection() : instance;
+    }
+
+    private void handleSqlError(SQLException ex) {
+        System.out.println("SQLException: " + ex.getMessage());
+        System.out.println("SQLState: " + ex.getSQLState());
+        System.out.println("VendorError: " + ex.getErrorCode());
+        ex.printStackTrace();
+    }
 
     /**
      * Insert un utilisateur dans la base
+     *
      * @param nom
      * @param prenom
      * @param mail
      * @param mdp
      * @return le dernier user crée dans la bdd
      */
-    public long createUser(String nom, String prenom, String mail, String mdp){
+    public long createUser(String nom, String prenom, String mail, String mdp) {
 
         long res = -1;
-        try{
+        try {
            /*
            // hachage du mdp
            SecureRandom random = new SecureRandom();
@@ -79,19 +71,19 @@ public class MySQLBddConnection {
             KeySpec spec = new PBEKeySpec(mdp.toCharArray(), salt, 65536, 128);
             SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");*/
             String sqlQuery =
-                    "INSERT INTO "+USER_TABLE+"(`id`,`nom`,`prenom`,`mail`,`mdp`) " +
-                    "VALUES (null,'" + nom + "','"+prenom +"','"+mail+"','"+mdp+"')";
+                    "INSERT INTO " + USER_TABLE + "(`id`,`nom`,`prenom`,`mail`,`mdp`) " +
+                            "VALUES (null,'" + nom + "','" + prenom + "','" + mail + "','" + mdp + "')";
 
             PreparedStatement statement = this.connection.prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS);
-            var nbrow  = statement.executeUpdate();
-            if(nbrow > 0){
+            var nbrow = statement.executeUpdate();
+            if (nbrow > 0) {
                 ResultSet rs = statement.getGeneratedKeys();
-                if(rs.next())
+                if (rs.next())
                     res = rs.getLong(1);
             }
 
-        } catch (SQLException ex){
-           this.handleSqlError(ex);
+        } catch (SQLException ex) {
+            this.handleSqlError(ex);
         }/* catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }*/
@@ -100,20 +92,18 @@ public class MySQLBddConnection {
 
 
     /**
-     *
      * @return Tous les utilisateurs de la bdd
      */
-    public List<IUtilisateur> getAllUser(){
+    public List<IUtilisateur> getAllUser() {
         List<IUtilisateur> res = new ArrayList<>();
-        try{
-
+        try {
 
 
             Statement statement = this.connection.createStatement();
-            String sqlQuery = "SELECT * from "+USER_TABLE;
+            String sqlQuery = "SELECT * from " + USER_TABLE;
             var resultSet = statement.executeQuery(sqlQuery); // true si l'insertion se passe bien
 
-            while (resultSet.next()){
+            while (resultSet.next()) {
                 // si il n'y pas de ligne avec le meme mail
                 var user = IUtilisateur.creerUtilisateur(
                         resultSet.getInt("id"),
@@ -122,12 +112,12 @@ public class MySQLBddConnection {
                         resultSet.getString("mail"),
                         resultSet.getString("mdp")
 
-                        );
+                );
                 res.add(user);
 
             }
 
-        } catch (SQLException ex){
+        } catch (SQLException ex) {
             this.handleSqlError(ex);
         }
         return res;
@@ -135,24 +125,25 @@ public class MySQLBddConnection {
 
     /**
      * Verifie si un mail est déjà utilisé par un utilisateur ou non
+     *
      * @param mail
      * @return false si il n'exite pas, true sinon
      */
-    public boolean checkMail(String mail){
-        try{
+    public boolean checkMail(String mail) {
+        try {
 
 
             Statement statement = this.connection.createStatement();
-            String sqlQuery = "SELECT mail from "+USER_TABLE+ " WHERE mail = '"+ mail + "'";
+            String sqlQuery = "SELECT mail from " + USER_TABLE + " WHERE mail = '" + mail + "'";
             var resultSet = statement.executeQuery(sqlQuery); // true si l'insertion se passe bien
 
-            if (resultSet.next() ){
+            if (resultSet.next()) {
                 // si il n'y pas de ligne avec le meme mail
                 return false;
 
             }
 
-        } catch (SQLException ex){
+        } catch (SQLException ex) {
             this.handleSqlError(ex);
         }
         return true;
@@ -161,29 +152,30 @@ public class MySQLBddConnection {
 
     /**
      * Recupere un utilisateur via son mail et son mdp
+     *
      * @param mail
      * @param mdp
      * @return l'utilisateur
      */
-    public IUtilisateur getUserByMailAndMdp(String mail, String mdp){
+    public IUtilisateur getUserByMailAndMdp(String mail, String mdp) {
 
         IUtilisateur res = null;
-        try{
+        try {
             Statement statement = this.connection.createStatement();
-            String sqlQuery = "SELECT * from "+USER_TABLE+ " WHERE mail = '"+ mail + "' AND mdp = '" + mdp+"'";
+            String sqlQuery = "SELECT * from " + USER_TABLE + " WHERE mail = '" + mail + "' AND mdp = '" + mdp + "'";
             var resultSet = statement.executeQuery(sqlQuery); // true si l'insertion se passe bien
 
-            if(resultSet.next()){
+            if (resultSet.next()) {
                 res = IUtilisateur.creerUtilisateur(
                         resultSet.getInt("id"),
                         resultSet.getString("prenom"),
                         resultSet.getString("nom"),
                         resultSet.getString("mail"),
                         resultSet.getString("mdp")
-                        );
+                );
             }
 
-        } catch (SQLException ex){
+        } catch (SQLException ex) {
             this.handleSqlError(ex);
         }
         return res;
@@ -192,21 +184,22 @@ public class MySQLBddConnection {
 
     /**
      * Supprime un utilisateur de la bdd grâce à son mail et son mot de passe
+     *
      * @param mail
      * @param mdp
      * @return true si l'utilisateur à bien été supprimé
      */
-    public boolean deleteUser(String mail, String mdp){
+    public boolean deleteUser(String mail, String mdp) {
 
-        try{
+        try {
 
 
             Statement statement = this.connection.createStatement();
-            String sqlQuery = "DELETE from "+USER_TABLE+ " WHERE mail = '"+ mail + "' AND mdp = '"+mdp+"'";
+            String sqlQuery = "DELETE from " + USER_TABLE + " WHERE mail = '" + mail + "' AND mdp = '" + mdp + "'";
             statement.execute(sqlQuery); // true si le delete se passe bien
             return true;
 
-        } catch (SQLException ex){
+        } catch (SQLException ex) {
             this.handleSqlError(ex);
         }
         return false;
@@ -223,18 +216,18 @@ public class MySQLBddConnection {
         ticket_10_voyages
         ticket_1_voyage
      */
-    public float getTarif(String produit){
-        try{
+    public float getTarif(String produit) {
+        try {
 
 
             Statement statement = this.connection.createStatement();
-            String sqlQuery = "SELECT prix from "+TARIFS_TABLE+ " WHERE type_produit = '"+ produit + "' and actif = 1" ;
+            String sqlQuery = "SELECT prix from " + TARIFS_TABLE + " WHERE type_produit = '" + produit + "' and actif = 1";
             var resultSet = statement.executeQuery(sqlQuery); // true si le delete se passe bien
-            if (resultSet.next()){
-                 return resultSet.getFloat("prix");
+            if (resultSet.next()) {
+                return resultSet.getFloat("prix");
             }
 
-        } catch (SQLException ex){
+        } catch (SQLException ex) {
 
 
             this.handleSqlError(ex);
@@ -245,32 +238,35 @@ public class MySQLBddConnection {
     public float getPrix1Voyage() {
         return getTarif("ticket_1_voyage");
     }
+
     public float getPrix10Voyages() {
         return getTarif("ticket_10_voyages");
     }
+
     public float getPrix1MoisAbo() {
         return getTarif("abonnement_mensuel");
     }
+
     public float getPrix1AnAbo() {
         return getTarif("abonnement_annuel");
     }
+
     /**
-     *
      * @param produit
      * @return l'id tarif d'un produit
      */
-    public int getIdTarif(String produit){
-        try{
+    public int getIdTarif(String produit) {
+        try {
 
 
             Statement statement = this.connection.createStatement();
-            String sqlQuery = "SELECT id from "+TARIFS_TABLE+ " WHERE type_produit = '"+ produit + "' and actif = 1" ;
+            String sqlQuery = "SELECT id from " + TARIFS_TABLE + " WHERE type_produit = '" + produit + "' and actif = 1";
             var resultSet = statement.executeQuery(sqlQuery); // true si le delete se passe bien
-            if (resultSet.next()){
+            if (resultSet.next()) {
                 return resultSet.getInt("id");
             }
 
-        } catch (SQLException ex){
+        } catch (SQLException ex) {
 
 
             this.handleSqlError(ex);
@@ -281,54 +277,70 @@ public class MySQLBddConnection {
 
     /**
      * Fixe un prix pour un produit en particulier
+     *
      * @param produit
      * @param prix
      */
-    public void setTarif(String produit, float prix){
-        try{
+    public void setTarif(String produit, float prix) {
+        try {
 
 
             Statement statement = this.connection.createStatement();
-            String sqlQuery1 = "UPDATE "+TARIFS_TABLE+" SET actif = 0 where type_produit = '"+produit+"' and actif = 1";
+            String sqlQuery1 = "UPDATE " + TARIFS_TABLE + " SET actif = 0 where type_produit = '" + produit + "' and actif = 1";
             statement.execute(sqlQuery1);
 
-            String sqlQuery2 = "INSERT INTO "+TARIFS_TABLE+" VALUES(null, "+produit+","+prix+",1)";
+            String sqlQuery2 = "INSERT INTO " + TARIFS_TABLE + " VALUES(null, " + produit + "," + prix + ",1)";
             statement.execute(sqlQuery2);
 
 
-        } catch (SQLException ex){
+        } catch (SQLException ex) {
             this.handleSqlError(ex);
         }
 
     }
 
-    public void setPrixAbonnementMensuel(float prix){
-        setTarif("abonnement_mensuel",prix);
+    public void setPrixAbonnementMensuel(float prix) {
+        setTarif("abonnement_mensuel", prix);
     }
-    public void setPrixAbonnementAnnuel(float prix){
-        setTarif("abonnement_annuel",prix);
+
+    public void setPrixAbonnementAnnuel(float prix) {
+        setTarif("abonnement_annuel", prix);
     }
-    public void setPrixTicket1Voyage(float prix){
-        setTarif("ticket_1_voyage",prix);
+
+    public void setPrixTicket1Voyage(float prix) {
+        setTarif("ticket_1_voyage", prix);
     }
-    public void setPrixTicket10Voyages(float prix){
-        setTarif("ticket_10_voyages",prix);
+
+    public void setPrixTicket10Voyages(float prix) {
+        setTarif("ticket_10_voyages", prix);
     }
 
 
     /**
      * Ajoute un abonnement mensuel pour un utilisateur
+     *
      * @param userID
      * @return true si l'ajout de l'abonnement à bien été effectuer
      */
-    public boolean abonnementMensuel(long userID){
+    public boolean abonnementMensuel(long userID) {
         try {
             Statement statement = this.connection.createStatement();
-            String sqlQuery =
-                    "INSERT INTO "+ABONNEMENT_TABLE+" VALUES"+ "(null,DATE(NOW()),DATE_ADD(DATE(NOW()), INTERVAL 1 MONTH), "+
-                            getIdTarif("abonnement_mensuel")+","
-                            +userID
-                            +")";
+            IAbonnement lastAbonnement = getAbonnement_byUser(userID)
+                    .stream()
+                    .max(Comparator.comparing(IAbonnement::getDateFin)).get();
+            String sqlQuery = "";
+            if (lastAbonnement.estValide()) {
+                sqlQuery = "INSERT INTO " + ABONNEMENT_TABLE + " VALUES" + "(null,"+lastAbonnement.getDateFin().toString()+",DATE_ADD(DATE(NOW()), INTERVAL 1 MONTH), " +
+                        getIdTarif(ABONNEMENT_MENSUEL) + ","
+                        + userID
+                        + ")";
+            }else{
+                sqlQuery = "INSERT INTO " + ABONNEMENT_TABLE + " VALUES" + "(null,DATE(NOW()),DATE_ADD(DATE(NOW()), INTERVAL 1 MONTH), " +
+                        getIdTarif(ABONNEMENT_MENSUEL) + ","
+                        + userID
+                        + ")";
+            }
+
             statement.execute(sqlQuery);
             return true;
         } catch (SQLException throwables) {
@@ -339,17 +351,29 @@ public class MySQLBddConnection {
 
     /**
      * Ajoute un abonnement annuel pour un utilisateur
+     *
      * @param userID
      * @return true si l'ajout de l'abonnement à bien été effectué
      */
-    public boolean abonnementAnnuel(long userID){
+    public boolean abonnementAnnuel(long userID) {
         try {
             Statement statement = this.connection.createStatement();
-            String sqlQuery =
-                    "INSERT INTO "+ABONNEMENT_TABLE+" VALUES"+ "(null,DATE(NOW()),DATE_ADD(DATE(NOW()), INTERVAL 1 YEAR), "+
-                            getIdTarif("abonnement_annuel")+","
-                            +userID
-                            +")";
+            IAbonnement lastAbonnement = getAbonnement_byUser(userID)
+                    .stream()
+                    .max(Comparator.comparing(IAbonnement::getDateFin)).get();
+            String sqlQuery = "";
+            if (lastAbonnement.estValide()) {
+                sqlQuery = "INSERT INTO " + ABONNEMENT_TABLE + " VALUES" + "(null,"+lastAbonnement.getDateFin().toString()+",DATE_ADD(DATE(NOW()), INTERVAL 1 YEAR), " +
+                        getIdTarif(ABONNEMENT_ANNUEL) + ","
+                        + userID
+                        + ")";
+            }else{
+                sqlQuery = "INSERT INTO " + ABONNEMENT_TABLE + " VALUES" + "(null,DATE(NOW()),DATE_ADD(DATE(NOW()), INTERVAL 1 YEAR), " +
+                        getIdTarif(ABONNEMENT_ANNUEL) + ","
+                        + userID
+                        + ")";
+            }
+
             statement.execute(sqlQuery);
             return true;
         } catch (SQLException throwables) {
@@ -361,18 +385,19 @@ public class MySQLBddConnection {
 
     /**
      * Ajoute un ticket à l'unité pour un utilisateur
+     *
      * @param userID
      * @return true si l'ajout à bien été effectué
      */
-    public boolean insertTicket1Voyage(long userID){
+    public boolean insertTicket1Voyage(long userID) {
         try {
             Statement statement = this.connection.createStatement();
             String sqlQuery =
-                    "INSERT INTO "+TICKET_TABLE+" VALUES (" +
-                            "null,"+
-                            getIdTarif("ticket_1_voyage")+","
-                            +1+","
-                            +userID+")";
+                    "INSERT INTO " + TICKET_TABLE + " VALUES (" +
+                            "null," +
+                            getIdTarif("ticket_1_voyage") + ","
+                            + 1 + ","
+                            + userID + ")";
 
             statement.execute(sqlQuery);
             return true;
@@ -384,18 +409,19 @@ public class MySQLBddConnection {
 
     /**
      * Ajoute un carnet de 10 tickets pour un utilisateur
+     *
      * @param userID
      * @return true si l'ajout à bien été effectué
      */
-    public boolean insertTicket10Voyages(long userID){
+    public boolean insertTicket10Voyages(long userID) {
         try {
             Statement statement = this.connection.createStatement();
             String sqlQuery =
-                    "INSERT INTO "+TICKET_TABLE+" VALUES"+ "(" +
-                            "null,"+
-                            getIdTarif("ticket_10_voyages")+","
-                            +10+","
-                            +userID+")";
+                    "INSERT INTO " + TICKET_TABLE + " VALUES" + "(" +
+                            "null," +
+                            getIdTarif("ticket_10_voyages") + ","
+                            + 10 + ","
+                            + userID + ")";
             statement.execute(sqlQuery);
             return true;
         } catch (SQLException throwables) {
@@ -413,7 +439,7 @@ public class MySQLBddConnection {
         try {
             Statement statement = this.connection.createStatement();
             String sqlQuery =
-                    "SELECT * FROM "+TICKET_TABLE+" where id_user=" + userID;
+                    "SELECT * FROM " + TICKET_TABLE + " where id_user=" + userID;
             var resultSet = statement.executeQuery(sqlQuery);
             resultSet.next();
             while (resultSet.next()) {
@@ -453,7 +479,7 @@ public class MySQLBddConnection {
         try {
             Statement statement = this.connection.createStatement();
             String sqlQuery =
-                    "SELECT * FROM "+ABONNEMENT_TABLE+" where id_user=" + userID;
+                    "SELECT * FROM " + ABONNEMENT_TABLE + " where id_user=" + userID;
             var resSet = statement.executeQuery(sqlQuery);
             resSet.next();
             while (resSet.next()) {
@@ -470,10 +496,10 @@ public class MySQLBddConnection {
                 String typeAbo = resType.getString("type_produit");
 
                 switch (typeAbo) {
-                    case "abonnement_mensuel":
+                    case ABONNEMENT_MENSUEL:
                         abonnementsList.add(IAbonnement.creerAbonnementMensuel(idAbo, LocalDate.now(), prixAbo));
-                    case "abonnement_annuel":
-                        abonnementsList.add(IAbonnement.creerAbonnementAnnuel(idAbo, LocalDate.now(),prixAbo));
+                    case ABONNEMENT_ANNUEL:
+                        abonnementsList.add(IAbonnement.creerAbonnementAnnuel(idAbo, LocalDate.now(), prixAbo));
                 }
             }
             return abonnementsList;
@@ -482,7 +508,6 @@ public class MySQLBddConnection {
         }
         return abonnementsList;
     }
-
 
 
 }
