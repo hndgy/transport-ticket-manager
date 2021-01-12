@@ -2,6 +2,7 @@ package application.model.facade;
 
 import application.model.DTO.*;
 import application.model.bdd.pojos.Carte;
+import application.model.models.carteDeTransport.produits.abonnement.IAbonnement;
 import application.model.models.carteDeTransport.produits.ticket.ITicket;
 import application.model.models.exceptions.MailDejaUtiliseException;
 import application.model.models.exceptions.NbTitreNonValide;
@@ -32,6 +33,8 @@ public interface IFacade {
     boolean validerTitre(String idCarte);
 
     List<ITicket> getTickets(long idUser);
+
+    List<IAbonnement> getAbonnements(long idUser);
 
     boolean isConnected(long idUser);
 

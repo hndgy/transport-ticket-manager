@@ -4,6 +4,7 @@ import application.model.DTO.*;
 import application.model.bdd.MongoDbConnection;
 import application.model.bdd.MySQLBddConnection;
 import application.model.bdd.pojos.Carte;
+import application.model.models.carteDeTransport.produits.abonnement.IAbonnement;
 import application.model.models.carteDeTransport.produits.ticket.ITicket;
 import application.model.models.exceptions.MailDejaUtiliseException;
 import application.model.models.exceptions.NbTitreNonValide;
@@ -159,6 +160,11 @@ public class FacadeImpl implements IFacade {
     @Override
     public List<ITicket> getTickets(long idUser){
         return mySQLBddConnection.getTicket_byUser(idUser);
+    }
+
+    @Override
+    public List<IAbonnement> getAbonnements(long idUser) {
+        return mySQLBddConnection.getAbonnement_byUser(idUser);
     }
 
     /**

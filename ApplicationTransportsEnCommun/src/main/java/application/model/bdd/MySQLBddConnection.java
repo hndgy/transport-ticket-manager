@@ -1,5 +1,6 @@
 package application.model.bdd;
 
+import application.model.models.carteDeTransport.produits.abonnement.IAbonnement;
 import application.model.models.carteDeTransport.produits.ticket.ITicket;
 import application.model.models.utilisateur.IUtilisateur;
 
@@ -9,6 +10,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.KeySpec;
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -422,5 +424,45 @@ public class MySQLBddConnection {
             throwables.printStackTrace();
         }
         return ticketList;
+    }
+
+
+    /**
+     * @param userID
+     * @return les abonnements de l'utilisateur dans une liste
+     */
+    public List<IAbonnement> getAbonnement_byUser(long userID) {
+        List<IAbonnement> abonnementsList = new ArrayList<>();
+        try {
+            Statement statement = this.connection.createStatement();
+            String sqlQuery =
+                    "SELECT * FROM abonnement where id_user=" + userID;
+            var resSet = statement.executeQuery(sqlQuery);
+            resSet.next();
+            while (resSet.next()) {
+
+                int idAbo = resSet.getInt("id");
+                ResultSet resPrix = this.connection.createStatement().executeQuery(
+                        "SELECT prix FROM tarifs WHERE id = " + resSet.getInt("id_tarif"));
+                resPrix.next();
+                int prixAbo = resPrix.getInt("prix");
+
+                ResultSet resType = this.connection.createStatement().executeQuery(
+                        "SELECT type_produit FROM tarifs WHERE id = " + resSet.getInt("id_tarif"));
+                resType.next();
+                String typeAbo = resType.getString("type_produit");
+
+                switch (typeAbo) {
+                    case "abonnement_mensuel":
+                        abonnementsList.add(IAbonnement.creerAbonnementMensuel(idAbo, LocalDate.now(), prixAbo));
+                    case "abonnement_annuel":
+                        abonnementsList.add(IAbonnement.creerAbonnementAnnuel(idAbo, LocalDate.now(),prixAbo));
+                }
+            }
+            return abonnementsList;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return abonnementsList;
     }
 }
