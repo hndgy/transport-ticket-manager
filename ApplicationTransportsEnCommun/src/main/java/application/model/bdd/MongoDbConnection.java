@@ -65,7 +65,8 @@ public class MongoDbConnection {
      * @return un int qui correspond au nombre de voyage restant
      */
     public int getNbVoyage(long idTitulaire) {
-        return this.cartes.find(new Document("id_titulaire", idTitulaire)).iterator().next().getNbVoyages();
+        //return this.cartes.find(new Document("id_titulaire", idTitulaire)).iterator().next().getNbVoyages();
+        return this.cartes.find(new Document("id_titulaire", idTitulaire)).first().getNbVoyages();
     }
 
     /**
