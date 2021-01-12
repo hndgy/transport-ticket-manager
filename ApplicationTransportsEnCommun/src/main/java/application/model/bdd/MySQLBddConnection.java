@@ -24,9 +24,16 @@ public class MySQLBddConnection {
     // TABLES
     private static final String USER_TABLE = "`utilisateur`";
     private static final String TARIFS_TABLE = "`tarifs`";
+    private static final String ABONNEMENT_TABLE = "`abonnement`";
+    private static final String TICKET_TABLE = "`ticket`";
+
 
     // CHAINE DE CONNEXION
-    private static final String CONNECTION_STRING = "jdbc:mysql://localhost/db?user=admin&password=password";
+    private static final String CONNECTION_STRING =
+            "jdbc:mysql://"+ConfigBdd.getConfig("mysql.host")
+            +"/"+ConfigBdd.getConfig("mysql.db")+
+                    "?user="+ConfigBdd.getConfig("mysql.user")+
+                    "&password="+ConfigBdd.getConfig("mysql.password");
 
     private static MySQLBddConnection instance;
 
@@ -282,10 +289,10 @@ public class MySQLBddConnection {
 
 
             Statement statement = this.connection.createStatement();
-            String sqlQuery1 = "UPDATE tarifs SET actif = 0 where type_produit = '"+produit+"' and actif = 1";
+            String sqlQuery1 = "UPDATE "+TARIFS_TABLE+" SET actif = 0 where type_produit = '"+produit+"' and actif = 1";
             statement.execute(sqlQuery1);
 
-            String sqlQuery2 = "INSERT INTO tarifs VALUES(null, "+produit+","+prix+",1)";
+            String sqlQuery2 = "INSERT INTO "+TARIFS_TABLE+" VALUES(null, "+produit+","+prix+",1)";
             statement.execute(sqlQuery2);
 
 
@@ -318,7 +325,7 @@ public class MySQLBddConnection {
         try {
             Statement statement = this.connection.createStatement();
             String sqlQuery =
-                    "INSERT INTO abonnement VALUES"+ "(null,DATE(NOW()),DATE_ADD(DATE(NOW()), INTERVAL 1 MONTH), "+
+                    "INSERT INTO "+ABONNEMENT_TABLE+" VALUES"+ "(null,DATE(NOW()),DATE_ADD(DATE(NOW()), INTERVAL 1 MONTH), "+
                             getIdTarif("abonnement_mensuel")+","
                             +userID
                             +")";
@@ -339,7 +346,7 @@ public class MySQLBddConnection {
         try {
             Statement statement = this.connection.createStatement();
             String sqlQuery =
-                    "INSERT INTO abonnement VALUES"+ "(null,DATE(NOW()),DATE_ADD(DATE(NOW()), INTERVAL 1 YEAR), "+
+                    "INSERT INTO "+ABONNEMENT_TABLE+" VALUES"+ "(null,DATE(NOW()),DATE_ADD(DATE(NOW()), INTERVAL 1 YEAR), "+
                             getIdTarif("abonnement_annuel")+","
                             +userID
                             +")";
@@ -361,7 +368,7 @@ public class MySQLBddConnection {
         try {
             Statement statement = this.connection.createStatement();
             String sqlQuery =
-                    "INSERT INTO ticket VALUES (" +
+                    "INSERT INTO "+TICKET_TABLE+" VALUES (" +
                             "null,"+
                             getIdTarif("ticket_1_voyage")+","
                             +1+","
@@ -384,7 +391,7 @@ public class MySQLBddConnection {
         try {
             Statement statement = this.connection.createStatement();
             String sqlQuery =
-                    "INSERT INTO ticket VALUES"+ "(" +
+                    "INSERT INTO "+TICKET_TABLE+" VALUES"+ "(" +
                             "null,"+
                             getIdTarif("ticket_10_voyages")+","
                             +10+","
@@ -406,7 +413,7 @@ public class MySQLBddConnection {
         try {
             Statement statement = this.connection.createStatement();
             String sqlQuery =
-                    "SELECT * FROM ticket where id_user=" + userID;
+                    "SELECT * FROM "+TICKET_TABLE+" where id_user=" + userID;
             var resultSet = statement.executeQuery(sqlQuery);
             resultSet.next();
             while (resultSet.next()) {
@@ -446,7 +453,7 @@ public class MySQLBddConnection {
         try {
             Statement statement = this.connection.createStatement();
             String sqlQuery =
-                    "SELECT * FROM abonnement where id_user=" + userID;
+                    "SELECT * FROM "+ABONNEMENT_TABLE+" where id_user=" + userID;
             var resSet = statement.executeQuery(sqlQuery);
             resSet.next();
             while (resSet.next()) {

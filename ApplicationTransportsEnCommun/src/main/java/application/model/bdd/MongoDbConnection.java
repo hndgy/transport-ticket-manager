@@ -25,19 +25,15 @@ import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
 public class MongoDbConnection {
 
-    private static final String DB_NAME = "transportDB";
-    private static final String COL_CARTES = "cartes";
-    private static final String USER_DB = "admin";
-    private static final String USER = "admin";
-    private static final String PASSWORD = "root";
-    private static final String HOST = "localhost";
+
+
 
     private MongoDatabase db;
     private MongoCollection<Carte> cartes;
     private static MongoDbConnection instance;
 
     public MongoDbConnection() {
-        ConnectionString connectionString = new ConnectionString("mongodb://" + USER + ":" + PASSWORD + "@" + HOST + ":27017/");
+        ConnectionString connectionString = new ConnectionString("mongodb://" + ConfigBdd.getConfig("mongo.user") + ":" + ConfigBdd.getConfig("mongo.password") + "@" + ConfigBdd.getConfig("mongo.host"));
         //ConnectionString connectionString = new ConnectionString("mongodb://localhost:27017");
 
         CodecRegistry pojoCodecRegistry = fromProviders(PojoCodecProvider.builder().automatic(true).build());
@@ -49,8 +45,8 @@ public class MongoDbConnection {
                         .codecRegistry(codecRegistry)
                         .build();
         MongoClient mongoClient = MongoClients.create(clientSettings);
-        this.db = mongoClient.getDatabase(DB_NAME);
-        this.cartes = this.db.getCollection(COL_CARTES, Carte.class);
+        this.db = mongoClient.getDatabase(ConfigBdd.getConfig("mongo.db"));
+        this.cartes = this.db.getCollection(ConfigBdd.getConfig("mongo.collection.cartes"), Carte.class);
     }
 
     public static MongoDbConnection getMongoInstance() {
