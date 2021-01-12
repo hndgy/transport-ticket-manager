@@ -203,6 +203,11 @@ public class FacadeImpl implements IFacade {
         return mongoDbConnection.getNbVoyage(idTitu);
     }
 
+    @Override
+    public int getNbVoyageByIdCarte(String idCarte) {
+        return mongoDbConnection.getNbVoyageByIdCarte(idCarte);
+    }
+
     /**
      * @param idTitu
      * @return la date de fin d'abonnement de la carte d'un utilisateur

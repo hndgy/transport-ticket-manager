@@ -47,6 +47,8 @@ public interface IFacade {
 
     int getNbVoyage(long idTitu);
 
+    int getNbVoyageByIdCarte(String idCarte);
+
     LocalDate getFinAbonnement(long idTitu);
 
     //ADMIN
