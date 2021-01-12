@@ -164,12 +164,12 @@ public class FacadeImpl implements IFacade {
      */
     @Override
     public List<ITicket> getTickets(long idUser){
-        return mySQLBddConnection.getTicket_byUser(idUser);
+        return mySQLBddConnection.getTicketByUser(idUser);
     }
 
     @Override
     public List<IAbonnement> getAbonnements(long idUser) {
-        return mySQLBddConnection.getAbonnement_byUser(idUser);
+        return mySQLBddConnection.getAbonnementByUser(idUser);
     }
 
     /**

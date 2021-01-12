@@ -408,7 +408,7 @@ public class MySQLBddConnection {
      * @param userID
      * @return les tickets disponibles pour un utilisateur dans une liste
      */
-    public List<ITicket> getTicket_byUser(long userID) {
+    public List<ITicket> getTicketByUser(long userID) {
         List<ITicket> ticketList = new ArrayList<>();
         try {
             Statement statement = this.connection.createStatement();
@@ -448,7 +448,7 @@ public class MySQLBddConnection {
      * @param userID
      * @return les abonnements de l'utilisateur dans une liste
      */
-    public List<IAbonnement> getAbonnement_byUser(long userID) {
+    public List<IAbonnement> getAbonnementByUser(long userID) {
         List<IAbonnement> abonnementsList = new ArrayList<>();
         try {
             Statement statement = this.connection.createStatement();
