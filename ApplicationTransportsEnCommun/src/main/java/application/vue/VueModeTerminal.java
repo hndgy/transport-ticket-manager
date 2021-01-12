@@ -1,9 +1,12 @@
 package application.vue;
 
+import application.model.bdd.pojos.Carte;
 import application.model.models.carteDeTransport.produits.abonnement.IAbonnement;
+import application.model.models.carteDeTransport.produits.ticket.ITicket;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.Scanner;
 import java.util.regex.Matcher;
@@ -68,6 +71,7 @@ public class VueModeTerminal {
     }
 
     public void titre(String titre){
+        this.info(titre);
         clear();
         System.out.println("################# "+  titre.toUpperCase() +" #################");
 
@@ -75,7 +79,7 @@ public class VueModeTerminal {
     public int pageMenu(String nom, String prenom){
         this.titre("ESPACE CLIENT : "+prenom + " "+nom);
         return this.checkboxes(" Faites un choix : ",
-                List.of(
+                List.of("Voir ma carte",
                         "Acheter un ticket",
                         "Souscrire un abonnement",
                         "Se désinscrire",
@@ -190,8 +194,8 @@ public class VueModeTerminal {
 
         this.titre("Souscrire à un abonnement");
         return this.checkboxes("Faites un choix : ",List.of(
-                "S'abonner pendant 1 Mois à"+prix1Mois+"€",
-                "S'abonner pendant 1 Année à"+prix1An+"€",
+                "S'abonner pendant 1 Mois à "+prix1Mois+"€",
+                "S'abonner pendant 1 Année à "+prix1An+"€",
                 "Retour"
 
         ));
@@ -216,5 +220,18 @@ public class VueModeTerminal {
      */
     public static String dateToString(LocalDate date){
         return date.getDayOfMonth() + "/"+date.getMonthValue()+"/"+date.getYear();
+    }
+
+    public void pageInfosCarte(String idCarte,LocalDate finabo, int nbVoyage) {
+        this.titre("ma carte");
+        System.out.println("Numero de votre carte : "+ idCarte);
+        if(finabo != null){
+            System.out.println("Fin de l'abonnement : "+ dateToString(finabo));
+        }else {
+            System.out.println("Pas d'abonnement");
+        }
+
+        System.out.println("Nombre de voyage restant : " + nbVoyage);
+        this.inputEnter();
     }
 }

@@ -100,19 +100,36 @@ public class Controlleur {
 
         var reponse = this.vue.pageMenu(userConnected.getPrenom(), userConnected.getNom());
 
-        if (reponse == 1){
+        if(reponse == 1){
+            this.infosCarte();
+        } else if (reponse == 2){
             this.achatTicket();
-        }else if(reponse == 2){
-            this.souscriptionAbonnment();
         }else if(reponse == 3){
+            this.souscriptionAbonnment();
+        }else if(reponse == 4){
             this.desinscription();
-        } else if(reponse == 4){
+        } else if(reponse == 5){
             this.idConnected = -1;
             this.vue.info("Vous avez été déconnecté");
             this.accueil();
         }else this.menuEspaceClient();
 
     }
+
+    private void infosCarte() {
+        var idCarte =  this.facade.getIdCarteByIdTitu(idConnected).toHexString();
+        var nbVoyage = this.facade.getNbVoyage(idConnected);
+        var finAbo = this.facade.getFinAbonnement(idCarte);
+
+        this.vue.pageInfosCarte(
+               idCarte,
+                finAbo,
+                nbVoyage
+        );
+
+        this.menuEspaceClient();
+    }
+
     public void desinscription(){
         var rep = this.vue.confirmer();
         if (rep == 1 ){
