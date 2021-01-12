@@ -121,13 +121,13 @@ public class MongoDbConnection {
     }
 
     /**
-     * Méthode qui permet de récupérer la date de fin d'abonnement d'une carte avec l'id du titulaire
+     * Méthode qui permet de récupérer la date de fin d'abonnement d'une carte avec l'id de la carte
      *
-     * @param idTitu long qui correspond à l'id du titulaire de la carte
+     * @param idCarte String qui correspond à l'ObjectId de la carte
      * @return un LocalDate qui correspond à la date de la fin de l'abonnement
      */
-    public LocalDate getFinAboByTitu(long idTitu) {
-        return this.cartes.find(new Document("id_titulaire", idTitu)).first().getDateFinAbonnement();
+    public LocalDate getFinAboByIdCarte(String idCarte) {
+        return this.cartes.find(new Document("_id", new ObjectId(idCarte))).first().getDateFinAbonnement();
     }
 
     /**

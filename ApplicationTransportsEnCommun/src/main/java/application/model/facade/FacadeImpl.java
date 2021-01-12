@@ -209,12 +209,12 @@ public class FacadeImpl implements IFacade {
     }
 
     /**
-     * @param idTitu
+     * @param idCarte
      * @return la date de fin d'abonnement de la carte d'un utilisateur
      */
     @Override
-    public LocalDate getFinAbonnement(long idTitu) {
-        return mongoDbConnection.getFinAboByTitu(idTitu);
+    public LocalDate getFinAbonnement(String idCarte) {
+        return mongoDbConnection.getFinAboByIdCarte(idCarte);
     }
 
     @Override

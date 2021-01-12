@@ -49,7 +49,7 @@ public interface IFacade {
 
     int getNbVoyageByIdCarte(String idCarte);
 
-    LocalDate getFinAbonnement(long idTitu);
+    LocalDate getFinAbonnement(String idCarte);
 
     //ADMIN
     void setPrixAbonnementMensuel(float prix);
