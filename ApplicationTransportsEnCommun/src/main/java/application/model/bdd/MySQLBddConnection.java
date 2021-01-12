@@ -328,8 +328,14 @@ public class MySQLBddConnection {
             IAbonnement lastAbonnement = getAbonnementByUser(userID)
                     .stream()
                     .max(Comparator.comparing(IAbonnement::getDateFin)).orElse(null);
+
+            /* MongoDbConnection mongoDbConnection = MongoDbConnection.getMongoInstance();
+            LocalDate lastAbonnement2 = mongoDbConnection.getFinAboByIdCarte(mongoDbConnection.getIdCarteByIdTitu(userID).toHexString());
+            LocalDate.now().isBefore(lastAbonnement2);
+            */
+
             String sqlQuery = "";
-            if (lastAbonnement != null && lastAbonnement.estValide()) {
+            if (lastAbonnement != null && lastAbonnement.estValide() /*LocalDate.now().isBefore(lastAbonnement2)*/) {
                 sqlQuery = "INSERT INTO " + ABONNEMENT_TABLE + " VALUES" + "(null,DATE("+lastAbonnement.getDateFin().toString()+"),DATE_ADD(DATE("+lastAbonnement.getDateFin().toString()+"), INTERVAL 1 MONTH), " +
                         getIdTarif(ABONNEMENT_MENSUEL) + ","
                         + userID
