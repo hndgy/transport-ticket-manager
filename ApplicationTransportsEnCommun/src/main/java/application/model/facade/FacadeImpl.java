@@ -24,6 +24,10 @@ public class FacadeImpl implements IFacade {
     private MySQLBddConnection mySQLBddConnection;
     private MongoDbConnection mongoDbConnection;
 
+    /**
+     * Constructeur de FacadeImpl
+     * Se connecte à la bdd Mongo et Mysql et créer une hashmap pour les utilisateurs connectés
+     */
     private FacadeImpl() {
         this.mySQLBddConnection = MySQLBddConnection.getInstance();
         this.connectedUsers = new HashMap<>();
@@ -34,6 +38,12 @@ public class FacadeImpl implements IFacade {
         return instance == null ? new FacadeImpl() : instance;
     }
 
+    /**
+     * Inscription d'un utilisateur dans la bdd MySql et création de sa carte dans la bdd Mongo
+     * @param userInscriptionDTO
+     * @return
+     * @throws MailDejaUtiliseException
+     */
     @Override
     public long inscrire(UserInscriptionDTO userInscriptionDTO) throws MailDejaUtiliseException {
         boolean checkMail = mySQLBddConnection.checkMail(userInscriptionDTO.getMail());
@@ -45,6 +55,11 @@ public class FacadeImpl implements IFacade {
 
     }
 
+    /**
+     * Désinscrit l'utilisateur de la bdd MySql et supprime sa carte dans Mongo
+     * @param userDesinscriptionDTO
+     * @return
+     */
     @Override
     public boolean desinscrire(UserDesinscriptionDTO userDesinscriptionDTO) {
         long id  = mySQLBddConnection.getUserByMailAndMdp(userDesinscriptionDTO.getMail(), userDesinscriptionDTO.getMdp()).getId();
@@ -56,6 +71,11 @@ public class FacadeImpl implements IFacade {
 
     }
 
+    /**
+     * Connecte un utilisateur et l'ajoute dans la hashmap
+     * @param userConnexionDTO
+     * @return
+     */
     @Override
     public long connecter(UserConnexionDTO userConnexionDTO) {
         var user = mySQLBddConnection.getUserByMailAndMdp(userConnexionDTO.getMail(), userConnexionDTO.getMdp());
@@ -67,12 +87,23 @@ public class FacadeImpl implements IFacade {
 
     }
 
+    /**
+     * Déconnecte l'utilisateur et le retire de la hashmap
+     * @param idUser
+     * @return
+     */
     @Override
     public boolean deconnecter(long idUser) {
         var res = this.connectedUsers.remove(idUser);
         return true;
     }
 
+    /**
+     * Permet à l'utilisateur de souscrire à un abonnement mensuel ou annuel et ajoute l'abonnement correspondant sur sa carte
+     * via la bdd Mongo
+     * @param souscriptionDTO
+     * @return
+     */
     @Override
     public boolean souscrireUnAbonnement(SouscriptionDTO souscriptionDTO) {
 
@@ -89,6 +120,11 @@ public class FacadeImpl implements IFacade {
         return false;
     }
 
+    /**
+     * Permet de commander soit un ticket à l'unité ou un carnet de 10 tickets et l'incrémente sur la carte de l'utilisateur
+     * @param commandeTitreDTO
+     * @throws NbTitreNonValide
+     */
     @Override
     public void commanderTitre(CommandeTitreDTO commandeTitreDTO) throws NbTitreNonValide {
         switch (commandeTitreDTO.getNbTitre()){
@@ -104,32 +140,63 @@ public class FacadeImpl implements IFacade {
          mongoDbConnection.updateNbVoyage(commandeTitreDTO.getIdUser(), commandeTitreDTO.getNbTitre());
     }
 
+    /**
+     * Valide ou non la carte de l'utilisateur sous réserve d'un nombre suffisant de voyage ou d'un abonnement valide, via la bdd Mongo
+     * @param idCarte
+     * @return
+     */
     @Override
     public boolean validerTitre(String idCarte) {
 
         return mongoDbConnection.isValide(idCarte);
     }
 
+
+    /**
+     * Récupère le nombre de ticket valide d'un utilisateur via la bdd MySql
+     * @param idUser
+     * @return
+     */
     @Override
     public List<ITicket> getTickets(long idUser){
         return mySQLBddConnection.getTicket_byUser(idUser);
     }
 
+    /**
+     * Retourne si l'utilisateur est connecté ou non
+     * @param idUser
+     * @return
+     */
     @Override
     public boolean isConnected(long idUser) {
         return this.connectedUsers.containsKey(idUser);
     }
 
+    /**
+     * Récupère l'id de la carte d'un utilisateur via son identifiant
+     * @param idTitu
+     * @return
+     */
     @Override
     public ObjectId getIdCarteByIdTitu(long idTitu) {
         return mongoDbConnection.getIdCarteByIdTitu(idTitu);
     }
 
+    /**
+     * Récupère le nombre de voyage disponible d'un utilisateur
+     * @param idTitu
+     * @return
+     */
     @Override
     public int getNbVoyage(long idTitu) {
         return mongoDbConnection.getNbVoyage(idTitu);
     }
 
+    /**
+     * Récupère la date de fin d'abonnement de la carte d'un utilisateur
+     * @param idTitu
+     * @return
+     */
     @Override
     public LocalDate getFinAbonnement(long idTitu) {
         return mongoDbConnection.getFinAboByTitu(idTitu);

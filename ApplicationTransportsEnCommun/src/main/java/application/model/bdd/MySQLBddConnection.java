@@ -125,7 +125,7 @@ public class MySQLBddConnection {
     }
 
     /**
-     * Verifie si un mail est déjà utilisé ou non
+     * Verifie si un mail est déjà utilisé par un utilisateur ou non
      * @param mail
      * @return false si il exite pas true sinon
      */
@@ -181,6 +181,12 @@ public class MySQLBddConnection {
     }
 
 
+    /**
+     * Supprime un utilisateur de la bdd grâce à son mail et son mot de passe
+     * @param mail
+     * @param mdp
+     * @return
+     */
     public boolean deleteUser(String mail, String mdp){
 
         try{
@@ -197,6 +203,11 @@ public class MySQLBddConnection {
         return false;
     }
 
+    /**
+     * Récupère le tarif d'un produit en particulier
+     * @param produit
+     * @return
+     */
     /*
     Les produits :
         abonnement_mensuel
@@ -280,9 +291,11 @@ public class MySQLBddConnection {
     }
 
 
-
-
-
+    /**
+     * Ajoute un abonnement mensuel pour un utilisateur
+     * @param userID
+     * @return
+     */
     public boolean abonnementMensuel(long userID){
         try {
             Statement statement = this.connection.createStatement();
@@ -299,6 +312,11 @@ public class MySQLBddConnection {
         return false;
     }
 
+    /**
+     * Ajoute un abonnement annuel pour un utilisateur
+     * @param userID
+     * @return
+     */
     public boolean abonnementAnnuel(long userID){
         try {
             Statement statement = this.connection.createStatement();
@@ -316,6 +334,11 @@ public class MySQLBddConnection {
 
     }
 
+    /**
+     * Ajoute un ticket à l'unité pour un utilisateur
+     * @param userID
+     * @return
+     */
     public boolean insertTicket1Voyage(long userID){
         try {
             Statement statement = this.connection.createStatement();
@@ -335,6 +358,11 @@ public class MySQLBddConnection {
         return false;
     }
 
+    /**
+     * Ajoute un carnet de 10 tickets pour un utilisateur
+     * @param userID
+     * @return
+     */
     public boolean insertTicket10Voyages(long userID){
         try {
             Statement statement = this.connection.createStatement();
@@ -353,6 +381,11 @@ public class MySQLBddConnection {
         return false;
     }
 
+    /**
+     * Récupère les tickets disponible pour un utilisateur dans une liste de type ITicket
+     * @param userID
+     * @return
+     */
     public List<ITicket> getTicket_byUser(long userID) {
         List<ITicket> ticketList = new ArrayList<>();
         try {
