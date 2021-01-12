@@ -325,7 +325,7 @@ public class MySQLBddConnection {
     public boolean abonnementMensuel(long userID) {
         try {
             Statement statement = this.connection.createStatement();
-            IAbonnement lastAbonnement = getAbonnement_byUser(userID)
+            IAbonnement lastAbonnement = getAbonnementByUser(userID)
                     .stream()
                     .max(Comparator.comparing(IAbonnement::getDateFin)).get();
             String sqlQuery = "";
@@ -358,7 +358,7 @@ public class MySQLBddConnection {
     public boolean abonnementAnnuel(long userID) {
         try {
             Statement statement = this.connection.createStatement();
-            IAbonnement lastAbonnement = getAbonnement_byUser(userID)
+            IAbonnement lastAbonnement = getAbonnementByUser(userID)
                     .stream()
                     .max(Comparator.comparing(IAbonnement::getDateFin)).get();
             String sqlQuery = "";
