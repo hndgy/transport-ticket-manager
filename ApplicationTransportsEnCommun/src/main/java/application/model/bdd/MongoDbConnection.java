@@ -307,8 +307,8 @@ public class MongoDbConnection {
     /**
      * Main avec des tests effectué pendant la phase de dev pour vérifier le fonctionnement de toutes les méthodes en Mongo
      */
-    public static void main(String[] args) {
-        MongoDbConnection c = new MongoDbConnection();
+    //public static void main(String[] args) {
+      //  MongoDbConnection c = new MongoDbConnection();
         /*
         var res = c.insertCarte(new Carte()
                 .setIdTitulaire(2)
@@ -338,6 +338,6 @@ public class MongoDbConnection {
         System.out.println(c.updateAbonnement(11,12));
         System.out.println(c.isValide(11));
         */
-    }
+    //}
 
 }
