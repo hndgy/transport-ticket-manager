@@ -20,13 +20,14 @@ public class Fixture {
 
         IFacade facade = IFacade.creerFacade();
 
-        int max = 1;
-        int min = 3;
+        int min = 1;
+        int max = 3;
         int range = max - min + 1;
 
        mySQLBddConnection.getAllUser().forEach(
                user -> {
-                   int rand = (int)(Math.random() * range) + min;
+                   int rand = (int)(Math.random() * range + min) ;
+                   System.out.println(rand);
                     mongoDbConnection.addCarteByTitu(user.getId());
 
                    switch (rand){
