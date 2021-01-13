@@ -118,6 +118,11 @@ public class FacadeImpl implements IFacade {
         return false;
     }
 
+    /**
+     * Permet à l'utilisateur de souscrire à un abonnement mensuel et
+     * ajoute l'abonnement correspondant sur sa carte via la bdd Mongo
+     * @param idUser
+     */
     @Override
     public void souscrireAbonnement1Mois(long idUser) {
         mySQLBddConnection.abonnementMensuel(idUser);
@@ -125,12 +130,22 @@ public class FacadeImpl implements IFacade {
 
     }
 
+    /**
+     * Permet à l'utilisateur de souscrire à un abonnement annuel et
+     * ajoute l'abonnement correspondant sur sa carte via la bdd Mongo
+     * @param idUser
+     */
     @Override
     public void souscrireAbonnement1An(long idUser) {
         mySQLBddConnection.abonnementAnnuel(idUser);
         mongoDbConnection.add1AnAbonnement(idUser);
     }
 
+    /**
+     * Permet à l'utilisateur de commander 1 voyage et
+     * ajoute les voyages sur sa carte via la bdd Mongo
+     * @param idUser
+     */
     @Override
     public void commmander1Voyage(long idUser) {
         mySQLBddConnection.insertTicket1Voyage(idUser);
@@ -138,6 +153,11 @@ public class FacadeImpl implements IFacade {
 
     }
 
+    /**
+     * Permet à l'utilisateur de commander 1 voyage et
+     * ajoute les voyages sur sa carte via la bdd Mongo
+     * @param idUser
+     */
     @Override
     public void commmander10Voyages(long idUser) {
         mySQLBddConnection.insertTicket10Voyages(idUser);

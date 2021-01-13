@@ -25,9 +25,6 @@ import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
 public class MongoDbConnection {
 
-
-
-
     private MongoDatabase db;
     private MongoCollection<Carte> cartes;
     private static MongoDbConnection instance;
@@ -53,7 +50,6 @@ public class MongoDbConnection {
         return instance == null ? new MongoDbConnection() : instance;
     }
 
-
     /**
      * Méthode qui permet de récuperer le nombre de voyage restant sur la carte de transport d'un utilisateur en passant son id en paramètre
      *
@@ -64,6 +60,12 @@ public class MongoDbConnection {
         return this.cartes.find(new Document("id_titulaire", idTitulaire)).iterator().next().getNbVoyages();
     }
 
+    /**
+     * Méthode qui permet de récuperer le nombre de voyage restant sur la carte de transport d'un utilisateur en passant l'id de la carte en paramètre
+     *
+     * @param idCarte String qui correspond à l'ObjectId de la carte de transport
+     * @return un int qui correspond au nombre de voyage restant sur la carte
+     */
     public int getNbVoyageByIdCarte(String idCarte) {
         return this.cartes.find(new Document("_id", new ObjectId(idCarte))).iterator().next().getNbVoyages();
     }
@@ -139,16 +141,23 @@ public class MongoDbConnection {
                         new Document("nb_voyages", nbVoyagePlusMoins)));
     }
 
-
+    /**
+     * Méthode qui appel updateNbVoyage() et qui permet d'ajouter directement 10 voyages à une carte de transport en prenant l'id de son titulaire en paramètre
+     *
+     * @param idUser long qui correspond à l'id de l'utilisateur
+     */
     public void add10Voyages(long idUser){
         this.updateNbVoyage(idUser,10);
     }
 
+    /**
+     * Méthode qui appel updateNbVoyage() et qui permet d'ajouter directement 1 voyage à une carte de transport en prenant l'id de son titulaire en paramètre
+     *
+     * @param idUser long qui correspond à l'id de l'utilisateur
+     */
     public void add1Voyage(long idUser){
         this.updateNbVoyage(idUser, 1);
     }
-
-
 
     /**
      * Méthode qui met à jour la date de fin d'abonnement d'une carte de transport pour un utilisateur passé en paramètre
@@ -167,12 +176,24 @@ public class MongoDbConnection {
         );
     }
 
+    /**
+     * Méthode qui appel updateAbonnement() et qui permet d'ajouter directement 1 mois d'abonnement à la carte de transport d'un utilisateur passé en paramètre
+     *
+     * @param idUser long qui correspond à l'id de l'utilisateur qui achète l'abonnement
+     */
     public void add1MoisAbonnement(long idUser) {
         updateAbonnement(idUser, 1);
     }
+
+    /**
+     * Méthode qui appel updateAbonnement() et qui permet d'ajouter directement 1 an d'abonnement à la carte de transport
+     *
+     * @param idUser long qui correspond à l'id de l'utilisateur qui achète l'abonnement
+     */
     public void add1AnAbonnement(long idUser) {
         updateAbonnement(idUser, 12);
     }
+
     /**
      * Méthode qui permet d'insérer dans la bdd mongo une carte de transport passée en paramètre
      *
@@ -248,6 +269,7 @@ public class MongoDbConnection {
      * @return true si la carte à un abonnement valide, ou un titre encore valide, ou un titre à valider (nombre de voyage supérieur à 0)
      * et sinon false
      */
+
     public boolean isValide(String idCarte) {
         var carte = this.getCarteByIdCarte(idCarte);
         var userId = carte.getIdTitulaire();
@@ -317,6 +339,5 @@ public class MongoDbConnection {
         System.out.println(c.isValide(11));
         */
     }
-
 
 }

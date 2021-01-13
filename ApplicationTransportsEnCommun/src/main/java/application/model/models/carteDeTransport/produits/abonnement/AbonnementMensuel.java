@@ -8,6 +8,6 @@ public class AbonnementMensuel extends AbstractAbonnement {
     }
 
     @Override
-    public boolean estValide() { return LocalDate.now().isAfter(getDateFin())&& LocalDate.now().isAfter(getDateDebut());}
+    public boolean estValide() { return LocalDate.now().isBefore(getDateFin()) ;}
     //public boolean estValide() { return getDateFin().isAfter(LocalDate.now()); }
 }
