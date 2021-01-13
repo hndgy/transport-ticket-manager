@@ -65,4 +65,6 @@ public interface IFacade {
     float getPrix1An();
 
     IUtilisateur getUser(long idUser);
+
+
 }

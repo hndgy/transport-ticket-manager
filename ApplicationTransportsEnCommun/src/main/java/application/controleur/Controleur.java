@@ -37,6 +37,7 @@ public class Controleur {
         } else if (reponse == 4){
             this.vue.fermer();
         }else{
+            this.vue.pinponpinpon();
             accueil();
         }
     }
@@ -223,8 +224,5 @@ public class Controleur {
     }
 
 
-    public void historiqueAchat(){
-
-    }
 
 }
