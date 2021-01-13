@@ -1,4 +1,4 @@
-package application.controlleur;
+package application.controleur;
 
 import application.model.DTO.*;
 import application.model.facade.IFacade;
@@ -8,16 +8,15 @@ import application.vue.VueModeTerminal;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 
-public class Controlleur {
+public class Controleur {
     private IFacade facade;
     private VueModeTerminal vue;
 
     private long idConnected;
 
 
-    public Controlleur() {
+    public Controleur() {
         this.facade = IFacade.creerFacade();
         this.vue = new VueModeTerminal();
         this.introduction();

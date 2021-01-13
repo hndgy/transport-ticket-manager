@@ -1,9 +1,9 @@
 package application.programme;
 
-import application.controlleur.Controlleur;
+import application.controleur.Controleur;
 
 public class Main {
     public static void main(String[] args) {
-        new Controlleur();
+        new Controleur();
     }
 }
