@@ -16,7 +16,6 @@ public class Fixture {
          */
 
         MySQLBddConnection mySQLBddConnection = new MySQLBddConnection();
-
         MongoDbConnection mongoDbConnection = new MongoDbConnection();
 
         IFacade facade = IFacade.creerFacade();
@@ -28,7 +27,19 @@ public class Fixture {
        mySQLBddConnection.getAllUser().forEach(
                user -> {
                    int rand = (int)(Math.random() * range) + min;
+                    mongoDbConnection.addCarteByTitu(user.getId());
 
+                   switch (rand){
+                       case 1:
+                           facade.souscrireAbonnement1An(user.getId());
+                           break;
+                       case 2:
+                           facade.commmander1Voyage(user.getId());
+                           break;
+                       case 3:
+                           facade.commmander10Voyages(user.getId());
+                           break;
+                   }
 
                });
 
