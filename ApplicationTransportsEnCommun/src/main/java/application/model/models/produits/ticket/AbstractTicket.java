@@ -1,4 +1,4 @@
-package application.model.models.carteDeTransport.produits.ticket;
+package application.model.models.produits.ticket;
 
 public abstract class AbstractTicket implements ITicket{
 

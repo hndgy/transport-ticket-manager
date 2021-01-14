@@ -1,7 +1,7 @@
 package application.model.bdd;
 
-import application.model.models.carteDeTransport.produits.abonnement.IAbonnement;
-import application.model.models.carteDeTransport.produits.ticket.ITicket;
+import application.model.models.produits.abonnement.IAbonnement;
+import application.model.models.produits.ticket.ITicket;
 import application.model.models.utilisateur.IUtilisateur;
 
 import java.sql.*;

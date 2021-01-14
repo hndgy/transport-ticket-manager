@@ -1,12 +1,8 @@
 package application.vue;
 
-import application.model.bdd.pojos.Carte;
-import application.model.models.carteDeTransport.produits.abonnement.IAbonnement;
-import application.model.models.carteDeTransport.produits.ticket.ITicket;
+import application.model.models.produits.abonnement.IAbonnement;
 
-import java.io.IOException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.Scanner;
 import java.util.regex.Matcher;

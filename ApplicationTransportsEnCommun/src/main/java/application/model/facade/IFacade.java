@@ -1,16 +1,13 @@
 package application.model.facade;
 
 import application.model.DTO.*;
-import application.model.bdd.pojos.Carte;
-import application.model.models.carteDeTransport.produits.abonnement.IAbonnement;
-import application.model.models.carteDeTransport.produits.ticket.ITicket;
+import application.model.models.produits.abonnement.IAbonnement;
+import application.model.models.produits.ticket.ITicket;
 import application.model.models.exceptions.MailDejaUtiliseException;
-import application.model.models.exceptions.NbTitreNonValide;
 import application.model.models.utilisateur.IUtilisateur;
 import org.bson.types.ObjectId;
 
 import java.time.LocalDate;
-import java.util.Collection;
 import java.util.List;
 
 public interface IFacade {

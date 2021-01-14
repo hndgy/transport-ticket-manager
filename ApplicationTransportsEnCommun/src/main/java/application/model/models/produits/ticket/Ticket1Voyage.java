@@ -1,4 +1,4 @@
-package application.model.models.carteDeTransport.produits.ticket;
+package application.model.models.produits.ticket;
 
 public class Ticket1Voyage extends AbstractTicket{
     public Ticket1Voyage(long id, float prix) {

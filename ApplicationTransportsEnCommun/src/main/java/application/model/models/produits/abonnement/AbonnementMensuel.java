@@ -1,4 +1,4 @@
-package application.model.models.carteDeTransport.produits.abonnement;
+package application.model.models.produits.abonnement;
 
 import java.time.LocalDate;
 
