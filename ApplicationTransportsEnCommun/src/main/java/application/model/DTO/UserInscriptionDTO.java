@@ -12,7 +12,7 @@ public class UserInscriptionDTO {
     private String nom;
     private String prenom;
 
-    public UserInscriptionDTO(String nom, String prenom, String motDePasse, String mail) {
+    public UserInscriptionDTO(String nom, String prenom, String mail, String motDePasse) {
         this.nom = nom;
         this.prenom = prenom;
         this.motDePasse = motDePasse;

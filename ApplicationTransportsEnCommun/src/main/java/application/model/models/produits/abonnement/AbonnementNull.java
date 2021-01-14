@@ -1,6 +1,4 @@
-package application.model.models.carteDeTransport.produits.abonnement;
-
-import java.time.LocalDate;
+package application.model.models.produits.abonnement;
 
 public class AbonnementNull extends AbstractAbonnement{
 

@@ -1,4 +1,4 @@
-package application.model.models.carteDeTransport.produits.abonnement;
+package application.model.models.produits.abonnement;
 
 import java.time.LocalDate;
 
@@ -8,7 +8,6 @@ public class AbonnementMensuel extends AbstractAbonnement {
     }
 
     @Override
-    public boolean estValide() {
-        return getDateFin().isAfter(LocalDate.now());
-    }
+    public boolean estValide() { return LocalDate.now().isBefore(getDateFin()) ;}
+    //public boolean estValide() { return getDateFin().isAfter(LocalDate.now()); }
 }

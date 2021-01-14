@@ -1,62 +1,284 @@
 package application.model.facade;
 
 import application.model.DTO.*;
-import application.model.bdd.FakeDB;
-import application.model.models.carteDeTransport.ICarteDeTransport;
-import application.model.models.carteDeTransport.portefeuille.IPortefeuilleDeTicket;
-import application.model.models.carteDeTransport.portefeuille.PortefeuilleDeTicketImpl;
-import application.model.models.carteDeTransport.produits.abonnement.IAbonnement;
-import application.model.models.carteDeTransport.produits.ticket.ITicket;
+import application.model.bdd.MongoDbConnection;
+import application.model.bdd.MySQLBddConnection;
+import application.model.models.produits.abonnement.IAbonnement;
+import application.model.models.produits.ticket.ITicket;
+import application.model.models.exceptions.MailDejaUtiliseException;
 import application.model.models.utilisateur.IUtilisateur;
+import org.bson.types.ObjectId;
 
-import javax.swing.text.DefaultEditorKit;
+import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class FacadeImpl implements IFacade {
 
 
+    private static FacadeImpl instance;
+    private Map<Long, IUtilisateur> connectedUsers;
+    private MySQLBddConnection mySQLBddConnection;
+    private MongoDbConnection mongoDbConnection;
 
-    FakeDB db;
-
-    FacadeImpl(){
-        this.db = new FakeDB();
+    /**
+     * Constructeur de FacadeImpl
+     * Se connecte à la bdd Mongo et Mysql et créer une hashmap pour les utilisateurs connectés
+     */
+    private FacadeImpl() {
+        this.mySQLBddConnection = MySQLBddConnection.getInstance();
+        this.connectedUsers = new HashMap<>();
+        this.mongoDbConnection = MongoDbConnection.getMongoInstance();
     }
 
+    public static FacadeImpl getInstance() {
+        return instance == null ? new FacadeImpl() : instance;
+    }
+
+    /**
+     * Inscription d'un utilisateur dans la bdd MySql et création de sa carte dans la bdd Mongo
+     * @param userInscriptionDTO
+     * @return l'id du nouvel utilisateur
+     * @throws MailDejaUtiliseException
+     */
     @Override
-    public long inscrire(UserInscriptionDTO userInscriptionDTO) {
-
-        return db.ajouterUser(userInscriptionDTO.getNom(), userInscriptionDTO.getPrenom(), userInscriptionDTO.getMail(), userInscriptionDTO.getMotDePasse());
+    public long inscrire(UserInscriptionDTO userInscriptionDTO) throws MailDejaUtiliseException {
+        boolean checkMail = mySQLBddConnection.checkMail(userInscriptionDTO.getMail());
+        if (checkMail) {
+            long idTitu = mySQLBddConnection.createUser(userInscriptionDTO.getNom(), userInscriptionDTO.getPrenom(), userInscriptionDTO.getMail(), userInscriptionDTO.getMotDePasse());
+            mongoDbConnection.addCarteByTitu(idTitu);
+            return idTitu;
+        } else throw new MailDejaUtiliseException(userInscriptionDTO.getMail());
 
     }
 
+    /**
+     * Désinscrit l'utilisateur de la bdd MySql et supprime sa carte dans Mongo
+     * @param userDesinscriptionDTO
+     * @return true si l'utilisateur est bien désinscrit sinon false
+     */
     @Override
     public boolean desinscrire(UserDesinscriptionDTO userDesinscriptionDTO) {
-        return false;
+        long id  = mySQLBddConnection.getUserByMailAndMdp(userDesinscriptionDTO.getMail(), userDesinscriptionDTO.getMdp()).getId();
+        if(isConnected(id)){
+            this.deconnecter(id);
+        }
+        mongoDbConnection.removeCarteByTitu(this.mySQLBddConnection.getUserByMailAndMdp(userDesinscriptionDTO.getMail(), userDesinscriptionDTO.getMdp()).getId());
+        return this.mySQLBddConnection.deleteUser(userDesinscriptionDTO.getMail(), userDesinscriptionDTO.getMdp());
+
     }
 
+    /**
+     * Connecte un utilisateur et l'ajoute dans la hashmap
+     * @param userConnexionDTO
+     * @return l'id de l'utilisateur connecté
+     */
     @Override
     public long connecter(UserConnexionDTO userConnexionDTO) {
-        return db.checkUser(userConnexionDTO.getMail(), userConnexionDTO.getMdp()) ;
+        var user = mySQLBddConnection.getUserByMailAndMdp(userConnexionDTO.getMail(), userConnexionDTO.getMdp());
+        if (user != null) {
+            this.connectedUsers.put(user.getId(), user);
+            return user.getId();
+        }
+        return -1;
+
     }
 
+    /**
+     * Déconnecte l'utilisateur et le retire de la hashmap
+     * @param idUser
+     * @return true si l'utilisateur est bien déconnecté
+     */
     @Override
     public boolean deconnecter(long idUser) {
-        return false;
+        var res = this.connectedUsers.remove(idUser);
+        return true;
     }
 
+    /** DEPRECATED
+     * Permet à l'utilisateur de souscrire à un abonnement mensuel ou annuel et ajoute l'abonnement correspondant sur sa carte
+     * via la bdd Mongo
+     * @param souscriptionDTO
+     * @return true si l'abonnement à bien été souscrit
+     */
     @Override
     public boolean souscrireUnAbonnement(SouscriptionDTO souscriptionDTO) {
+
+        switch (souscriptionDTO.getType()) {
+            case "mensuel":
+                mySQLBddConnection.abonnementMensuel(souscriptionDTO.getIdUser());
+                mongoDbConnection.updateAbonnement(souscriptionDTO.getIdUser(), 1);
+                return true;
+            case "annuel":
+                mySQLBddConnection.abonnementAnnuel(souscriptionDTO.getIdUser());
+                mongoDbConnection.updateAbonnement(souscriptionDTO.getIdUser(), 12);
+                return true;
+        }
         return false;
     }
 
+    /**
+     * Permet à l'utilisateur de souscrire à un abonnement mensuel et
+     * ajoute l'abonnement correspondant sur sa carte via la bdd Mongo
+     * @param idUser
+     */
     @Override
-    public boolean commanderTitre(CommandeTitreDTO commandeTitreDTO) {
-        return false;
+    public void souscrireAbonnement1Mois(long idUser) {
+        mySQLBddConnection.abonnementMensuel(idUser);
+        mongoDbConnection.add1MoisAbonnement(idUser);
+
+    }
+
+    /**
+     * Permet à l'utilisateur de souscrire à un abonnement annuel et
+     * ajoute l'abonnement correspondant sur sa carte via la bdd Mongo
+     * @param idUser
+     */
+    @Override
+    public void souscrireAbonnement1An(long idUser) {
+        mySQLBddConnection.abonnementAnnuel(idUser);
+        mongoDbConnection.add1AnAbonnement(idUser);
+    }
+
+    /**
+     * Permet à l'utilisateur de commander 1 voyage et
+     * ajoute les voyages sur sa carte via la bdd Mongo
+     * @param idUser
+     */
+    @Override
+    public void commmander1Voyage(long idUser) {
+        mySQLBddConnection.insertTicket1Voyage(idUser);
+        mongoDbConnection.add1Voyage(idUser);
+
+    }
+
+    /**
+     * Permet à l'utilisateur de commander 1 voyage et
+     * ajoute les voyages sur sa carte via la bdd Mongo
+     * @param idUser
+     */
+    @Override
+    public void commmander10Voyages(long idUser) {
+        mySQLBddConnection.insertTicket10Voyages(idUser);
+        mongoDbConnection.add10Voyages(idUser);
+
+    }
+
+
+    /**
+     * Valide ou non la carte de l'utilisateur sous réserve d'un nombre suffisant de voyage ou d'un abonnement valide
+     * @param idCarte
+     * @return true si la carte est valide pour embarquer
+     */
+    @Override
+    public boolean validerTitre(String idCarte) {
+
+        return mongoDbConnection.isValide(idCarte);
+    }
+
+
+    /**
+     * @param idUser
+     * @return la liste des tickets posséder par un utilisateur
+     */
+    @Override
+    public List<ITicket> getTickets(long idUser){
+        return mySQLBddConnection.getTicketByUser(idUser);
     }
 
     @Override
-    public boolean validerTitre(long idCarte) {
-        return false;
+    public List<IAbonnement> getAbonnements(long idUser) {
+        return mySQLBddConnection.getAbonnementByUser(idUser);
     }
+
+    /**
+     * Check si l'utilisateur est inclus dans la hashmap
+     * @param idUser
+     * @return true si l'utilisateur est connecté
+     */
+    @Override
+    public boolean isConnected(long idUser) {
+        return this.connectedUsers.containsKey(idUser);
+    }
+
+    /**
+     * @param idTitu
+     * @return l'id de la carte d'un utilisateur via son identifiant
+     */
+    @Override
+    public ObjectId getIdCarteByIdTitu(long idTitu) {
+        return mongoDbConnection.getIdCarteByIdTitu(idTitu);
+    }
+
+    /**
+     * @param idTitu
+     * @return le nombre de voyage disponible d'un utilisateur
+     */
+    @Override
+    public int getNbVoyage(long idTitu) {
+        return mongoDbConnection.getNbVoyage(idTitu);
+    }
+
+    @Override
+    public int getNbVoyageByIdCarte(String idCarte) {
+        return mongoDbConnection.getNbVoyageByIdCarte(idCarte);
+    }
+
+    /**
+     * @param idCarte
+     * @return la date de fin d'abonnement de la carte d'un utilisateur
+     */
+    @Override
+    public LocalDate getFinAbonnement(String idCarte) {
+        return mongoDbConnection.getFinAboByIdCarte(idCarte);
+    }
+
+    @Override
+    public void setPrixAbonnementMensuel(float prix) {
+       mySQLBddConnection.setPrixAbonnementMensuel(prix);
+    }
+
+    @Override
+    public void setPrixAbonnementAnnuel(float prix) {
+        mySQLBddConnection.setPrixAbonnementAnnuel(prix);
+    }
+
+    @Override
+    public void setPrixTicket1Voyage(float prix) {
+        mySQLBddConnection.setPrixTicket1Voyage(prix);
+    }
+
+    @Override
+    public void setPrixTicket10Voyages(float prix) {
+        mySQLBddConnection.setPrixTicket10Voyages(prix);
+    }
+
+    @Override
+    public float getPrix10Voyages() {
+        return mySQLBddConnection.getPrix10Voyages();
+    }
+
+    @Override
+    public float getPrix1Voyage() {
+        return mySQLBddConnection.getPrix1Voyage();
+    }
+
+    @Override
+    public float getPrix1Mois() {
+        return mySQLBddConnection.getPrix1MoisAbo();
+    }
+
+    @Override
+    public float getPrix1An() {
+        return mySQLBddConnection.getPrix1AnAbo();
+    }
+
+    @Override
+    public IUtilisateur getUser(long idUser) {
+        return this.connectedUsers.get(idUser);
+    }
+
+
+
 }
