@@ -96,27 +96,7 @@ public class FacadeImpl implements IFacade {
         return true;
     }
 
-    /** DEPRECATED
-     * Permet à l'utilisateur de souscrire à un abonnement mensuel ou annuel et ajoute l'abonnement correspondant sur sa carte
-     * via la bdd Mongo
-     * @param souscriptionDTO
-     * @return true si l'abonnement à bien été souscrit
-     */
-    @Override
-    public boolean souscrireUnAbonnement(SouscriptionDTO souscriptionDTO) {
 
-        switch (souscriptionDTO.getType()) {
-            case "mensuel":
-                mySQLBddConnection.abonnementMensuel(souscriptionDTO.getIdUser());
-                mongoDbConnection.updateAbonnement(souscriptionDTO.getIdUser(), 1);
-                return true;
-            case "annuel":
-                mySQLBddConnection.abonnementAnnuel(souscriptionDTO.getIdUser());
-                mongoDbConnection.updateAbonnement(souscriptionDTO.getIdUser(), 12);
-                return true;
-        }
-        return false;
-    }
 
     /**
      * Permet à l'utilisateur de souscrire à un abonnement mensuel et
@@ -125,8 +105,11 @@ public class FacadeImpl implements IFacade {
      */
     @Override
     public void souscrireAbonnement1Mois(long idUser) {
-        mySQLBddConnection.abonnementMensuel(idUser);
-        mongoDbConnection.add1MoisAbonnement(idUser);
+        if(isConnected(idUser)){
+            mySQLBddConnection.abonnementMensuel(idUser);
+            mongoDbConnection.add1MoisAbonnement(idUser);
+        }
+
 
     }
 
@@ -137,8 +120,11 @@ public class FacadeImpl implements IFacade {
      */
     @Override
     public void souscrireAbonnement1An(long idUser) {
-        mySQLBddConnection.abonnementAnnuel(idUser);
-        mongoDbConnection.add1AnAbonnement(idUser);
+        if(isConnected(idUser)) {
+            mySQLBddConnection.abonnementAnnuel(idUser);
+            mongoDbConnection.add1AnAbonnement(idUser);
+        }
+
     }
 
     /**
@@ -148,8 +134,10 @@ public class FacadeImpl implements IFacade {
      */
     @Override
     public void commmander1Voyage(long idUser) {
-        mySQLBddConnection.insertTicket1Voyage(idUser);
-        mongoDbConnection.add1Voyage(idUser);
+        if(isConnected(idUser)) {
+            mySQLBddConnection.insertTicket1Voyage(idUser);
+            mongoDbConnection.add1Voyage(idUser);
+        }
 
     }
 
@@ -160,8 +148,10 @@ public class FacadeImpl implements IFacade {
      */
     @Override
     public void commmander10Voyages(long idUser) {
-        mySQLBddConnection.insertTicket10Voyages(idUser);
-        mongoDbConnection.add10Voyages(idUser);
+        if(isConnected(idUser)) {
+            mySQLBddConnection.insertTicket10Voyages(idUser);
+            mongoDbConnection.add10Voyages(idUser);
+        }
 
     }
 
@@ -173,7 +163,6 @@ public class FacadeImpl implements IFacade {
      */
     @Override
     public boolean validerTitre(String idCarte) {
-
         return mongoDbConnection.isValide(idCarte);
     }
 
@@ -234,23 +223,28 @@ public class FacadeImpl implements IFacade {
         return mongoDbConnection.getFinAboByIdCarte(idCarte);
     }
 
+
     @Override
     public void setPrixAbonnementMensuel(float prix) {
+        // plus tard : vérifier si l'user connecté est admin
        mySQLBddConnection.setPrixAbonnementMensuel(prix);
     }
 
     @Override
     public void setPrixAbonnementAnnuel(float prix) {
+        // idem qu'au dessus
         mySQLBddConnection.setPrixAbonnementAnnuel(prix);
     }
 
     @Override
     public void setPrixTicket1Voyage(float prix) {
+        // idem qu'au dessus
         mySQLBddConnection.setPrixTicket1Voyage(prix);
     }
 
     @Override
     public void setPrixTicket10Voyages(float prix) {
+        // idem qu'au dessus
         mySQLBddConnection.setPrixTicket10Voyages(prix);
     }
 

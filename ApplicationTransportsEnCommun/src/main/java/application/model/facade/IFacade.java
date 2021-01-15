@@ -24,7 +24,6 @@ public interface IFacade {
 
     boolean deconnecter(long idUser);
 
-    boolean souscrireUnAbonnement(SouscriptionDTO souscriptionDTO);
 
     void souscrireAbonnement1Mois(long idUser);
     void souscrireAbonnement1An(long idUser);
